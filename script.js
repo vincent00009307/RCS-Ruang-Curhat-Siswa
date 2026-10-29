@@ -1,6 +1,39 @@
 const STORAGE_KEY = "rcsReports";
 const ADMIN_SESSION_KEY = "rcsAdminSession";
 
+const DEMO_REPORTS = [
+  {
+    id: "demo-1",
+    namaPelapor: "Aulia Rahma",
+    statusLaporan: "Baru",
+    asalSekolah: "SMA Negeri 7 Banda Aceh",
+    lokasiKejadian: "Koridor sekolah",
+    tanggalKejadian: "2026-10-20",
+    lingkunganSekolah: "Koridor",
+    deskripsiKejadian: "Saya mendapat komentar mengejek dan menyalahkan saat melewati koridor saat istirahat. Saya merasa malu dan tidak nyaman di sekolah.",
+  },
+  {
+    id: "demo-2",
+    namaPelapor: "Fikri Al-Hafiz",
+    statusLaporan: "Ditinjau",
+    asalSekolah: "SMA Labschool Banda Aceh",
+    lokasiKejadian: "Kelas XI-2",
+    tanggalKejadian: "2026-10-18",
+    lingkunganSekolah: "Kelas",
+    deskripsiKejadian: "Teman sekelas membuat grup chat dengan nama yang menyindir saya. Saya sudah melaporkan ke guru namun masih terjadi.",
+  },
+  {
+    id: "demo-3",
+    namaPelapor: "Nadia Putri",
+    statusLaporan: "Selesai",
+    asalSekolah: "SMA Muhammadiyah 1 Banda Aceh",
+    lokasiKejadian: "Perpustakaan",
+    tanggalKejadian: "2026-10-12",
+    lingkunganSekolah: "Perpustakaan",
+    deskripsiKejadian: "Saya mendapat intimidasi verbal dari beberapa siswa saat belajar di perpustakaan. Setelah pembicaraan dengan BK, situasi sudah mulai membaik.",
+  },
+];
+
 const escapeHtml = (value = "") =>
   String(value)
     .replace(/&/g, "&amp;")
@@ -25,6 +58,12 @@ const getReports = () => {
 
 const saveReports = (reports) => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(reports));
+};
+
+const seedDemoReports = () => {
+  if (getReports().length === 0) {
+    saveReports(DEMO_REPORTS);
+  }
 };
 
 const renderLandingReports = () => {
@@ -243,8 +282,10 @@ const initAdminPage = () => {
       localStorage.removeItem(ADMIN_SESSION_KEY);
       if (adminAuth) adminAuth.hidden = false;
       if (adminDashboard) adminDashboard.hidden = true;
-      document.getElementById("adminPassword").value = "";
-      document.getElementById("adminSchool").value = "";
+      const adminPassword = document.getElementById("adminPassword");
+      const adminSchool = document.getElementById("adminSchool");
+      if (adminPassword) adminPassword.value = "";
+      if (adminSchool) adminSchool.value = "";
     });
   }
 
@@ -268,6 +309,7 @@ const initYear = () => {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
+  seedDemoReports();
   initYear();
   initLandingPage();
   initAdminPage();

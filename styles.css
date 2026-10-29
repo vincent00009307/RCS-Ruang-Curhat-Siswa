@@ -1,1 +1,168 @@
-...
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Dashboard BK - RCS Ruang Curhat Siswa"
+    />
+    <title>Dashboard BK | RCS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="admin">
+    <div class="page-glow glow-one"></div>
+    <div class="page-glow glow-two"></div>
+
+    <header class="header">
+      <nav class="nav container">
+        <div class="brand" aria-label="RCS home">
+          <span class="brand-mark">R</span>
+          <span>RCS</span>
+        </div>
+
+        <div class="nav-links">
+          <a href="index.html">Beranda</a>
+          <a href="index.html#fitur">Fitur</a>
+          <a href="index.html#laporan">Laporan</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="admin-page">
+      <section class="auth-shell">
+        <div class="auth-card" id="loginPanel">
+          <span class="badge">Admin BK</span>
+          <h2>Masuk Dashboard</h2>
+          <p>
+            Akses ruang monitor laporan siswa dan tindak lanjut dukungan berbasis
+            sekolah.
+          </p>
+
+          <form id="adminLoginForm" class="auth-form">
+            <label>
+              <span>Nama sekolah</span>
+              <select id="schoolName" required>
+                <option value="">Pilih sekolah</option>
+                <option value="SMAN 1 Bandung">SMAN 1 Bandung</option>
+                <option value="SMAN 2 Bandung">SMAN 2 Bandung</option>
+                <option value="SMA Negeri 7 Bandung">SMA Negeri 7 Bandung</option>
+              </select>
+            </label>
+
+            <label>
+              <span>Password</span>
+              <input
+                id="adminPassword"
+                type="password"
+                placeholder="Masukkan password"
+                required
+              />
+            </label>
+
+            <button type="submit" class="btn btn-primary full-width">
+              Masuk Dashboard
+            </button>
+
+            <p id="authError" class="auth-error" aria-live="polite"></p>
+            <p class="auth-note">Demo password: <strong>RCS2026</strong></p>
+          </form>
+        </div>
+
+        <div class="container" id="adminDashboard" hidden>
+          <div class="dashboard-header">
+            <div>
+              <span class="eyebrow">Monitoring BK</span>
+              <h1>Dashboard Laporan Siswa</h1>
+            </div>
+            <button id="adminLogoutBtn" type="button" class="btn btn-secondary">
+              Keluar
+            </button>
+          </div>
+
+          <div class="summary-grid" id="summaryGrid">
+            <div class="summary-card accent-blue">
+              <span>Total Laporan</span>
+              <strong id="countTotal">0</strong>
+            </div>
+            <div class="summary-card accent-green">
+              <span>Selesai</span>
+              <strong id="countDone">0</strong>
+            </div>
+            <div class="summary-card accent-gold">
+              <span>Ditinjau</span>
+              <strong id="countReview">0</strong>
+            </div>
+            <div class="summary-card accent-red">
+              <span>Baru</span>
+              <strong id="countNew">0</strong>
+            </div>
+          </div>
+
+          <div class="dashboard-controls">
+            <div class="filter-group">
+              <label>
+                <span>Cari laporan</span>
+                <input id="searchInput" type="text" placeholder="Cari siswa, tema, atau sekolah" />
+              </label>
+            </div>
+
+            <div class="filter-group">
+              <label>
+                <span>Status</span>
+                <select id="statusFilter">
+                  <option value="all">Semua status</option>
+                  <option value="Baru">Baru</option>
+                  <option value="Ditinjau">Ditinjau</option>
+                  <option value="Selesai">Selesai</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="filter-group">
+              <label>
+                <span>Urutkan</span>
+                <select id="sortFilter">
+                  <option value="latest">Terbaru</option>
+                  <option value="oldest">Terlama</option>
+                  <option value="status">Status</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div class="dashboard-table-wrap">
+            <div class="table-header">
+              <h2>Daftar laporan siswa</h2>
+            </div>
+            <div class="table-responsive">
+              <table class="report-table">
+                <thead>
+                  <tr>
+                    <th>Nama Siswa</th>
+                    <th>Sekolah</th>
+                    <th>Lingkungan</th>
+                    <th>Lokasi</th>
+                    <th>Ringkasan</th>
+                    <th>Status</th>
+                    <th>Tanggal</th>
+                  </tr>
+                </thead>
+                <tbody id="adminTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+

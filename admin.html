@@ -1,1 +1,303 @@
-...
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="RCS - Ruang Curhat Siswa adalah platform dukungan pelajar yang aman, edukatif, dan anti-perundungan."
+    />
+    <title>RCS | Ruang Curhat Siswa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="header">
+      <nav class="nav container">
+        <div class="brand">
+          <span class="brand-mark">R</span>
+          <span>RCS</span>
+        </div>
+        <div class="nav-links">
+          <a href="#fitur">Fitur</a>
+          <a href="#laporan">Laporan</a>
+          <a href="#tentang">Tentang</a>
+          <a href="#faq">FAQ</a>
+          <a href="#kontak">Kontak</a>
+        </div>
+        <a href="#laporan" class="btn btn-primary">Buat Laporan</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-grid">
+          <div class="hero-content">
+            <span class="badge">Safe Space for Students</span>
+            <h1>Ruang Curhat Siswa untuk kesehatan mental dan dukungan murid.</h1>
+            <p>
+              Platform yang membantu siswa berbagi masalah, mendapatkan dukungan,
+              dan belajar cara menghadapi tekanan akademik, perundungan, dan
+              tantangan keseharian dengan aman dan nyaman.
+            </p>
+            <div class="hero-actions">
+              <a href="#laporan" class="btn btn-primary">Mulai Curhat</a>
+              <a href="#fitur" class="btn btn-secondary">Lihat Fitur</a>
+            </div>
+            <ul class="hero-stats">
+              <li><strong>24/7</strong><span>Support</span></li>
+              <li><strong>100%</strong><span>Aman</span></li>
+              <li><strong>Anti</strong><span>Perundungan</span></li>
+            </ul>
+          </div>
+
+          <div class="hero-card">
+            <div class="card-header">
+              <span class="dot dot-red"></span>
+              <span class="dot dot-yellow"></span>
+              <span class="dot dot-green"></span>
+            </div>
+            <div class="card-body">
+              <div class="mini-card">
+                <span class="mini-label">Status</span>
+                <strong>Student Support</strong>
+                <small>Aktif & siap membantu</small>
+              </div>
+              <div class="info-list">
+                <div>
+                  <span>✔Konseling ringan</span>
+                </div>
+                <div>
+                  <span>✔Edukasi anti-perundungan</span>
+                </div>
+                <div>
+                  <span>✔Ruang aman untuk curhat</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="features container" id="fitur">
+        <div class="section-heading">
+          <span class="eyebrow">Fitur Utama</span>
+          <h2>Solusi yang dibuat untuk siswa</h2>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature-item">
+            <div class="icon">💬</div>
+            <h3>Curhat Aman</h3>
+            <p>
+              Ruang komunikasi yang nyaman untuk membagi keluhan, kecemasan,
+              dan kebutuhan emosional tanpa rasa takut dihakimi.
+            </p>
+          </article>
+
+          <article class="feature-item">
+            <div class="icon">🧠</div>
+            <h3>Dukungan Mental</h3>
+            <p>
+              Memberikan panduan serta bentuk dukungan yang membantu siswa
+              menjaga keseimbangan emosi dan fokus belajar.
+            </p>
+          </article>
+
+          <article class="feature-item">
+            <div class="icon">📚</div>
+            <h3>Edukasi Anti-Perundungan</h3>
+            <p>
+              Menyediakan informasi dan edukasi tentang cara memahami,
+              mencegah, dan melawan perilaku perundungan di lingkungan sekolah.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="report-section" id="laporan">
+        <div class="container">
+          <div class="report-header">
+            <span class="eyebrow">Laporan Kejadian</span>
+            <h2>Form lapor kejadian di lingkungan sekolah</h2>
+          </div>
+
+          <div class="report-layout">
+            <form id="laporanForm" class="report-form">
+              <div class="form-grid">
+                <label>
+                  <span>Nama pelapor</span>
+                  <input id="namaPelapor" name="namaPelapor" type="text" placeholder="Nama lengkap" required />
+                </label>
+
+                <label>
+                  <span>Status laporan</span>
+                  <select id="statusLaporan" name="statusLaporan" required>
+                    <option value="Baru">Baru</option>
+                    <option value="Ditinjau">Ditinjau</option>
+                    <option value="Selesai">Selesai</option>
+                  </select>
+                </label>
+
+                <label>
+                  <span>Asal sekolah</span>
+                  <select id="asalSekolah" name="asalSekolah" required>
+                    <option value="">Pilih sekolah</option>
+                    <option value="SMA Negeri 1 Banda Aceh">SMA Negeri 1 Banda Aceh</option>
+                    <option value="SMA Negeri 2 Banda Aceh">SMA Negeri 2 Banda Aceh</option>
+                    <option value="SMA Negeri 3 Banda Aceh">SMA Negeri 3 Banda Aceh</option>
+                    <option value="SMA Negeri 4 Banda Aceh">SMA Negeri 4 Banda Aceh</option>
+                    <option value="SMA Negeri 5 Banda Aceh">SMA Negeri 5 Banda Aceh</option>
+                    <option value="SMA Negeri 6 Banda Aceh">SMA Negeri 6 Banda Aceh</option>
+                    <option value="SMA Negeri 7 Banda Aceh">SMA Negeri 7 Banda Aceh</option>
+                    <option value="SMA Negeri 8 Banda Aceh">SMA Negeri 8 Banda Aceh</option>
+                    <option value="SMA Negeri 9 Banda Aceh">SMA Negeri 9 Banda Aceh</option>
+                    <option value="SMA Negeri 10 Banda Aceh">SMA Negeri 10 Banda Aceh</option>
+                    <option value="SMA Negeri 11 Banda Aceh">SMA Negeri 11 Banda Aceh</option>
+                    <option value="SMA Negeri 12 Banda Aceh">SMA Negeri 12 Banda Aceh</option>
+                    <option value="SMA Negeri 13 Banda Aceh">SMA Negeri 13 Banda Aceh</option>
+                    <option value="SMA Negeri 14 Banda Aceh">SMA Negeri 14 Banda Aceh</option>
+                    <option value="SMA Negeri 15 Banda Aceh">SMA Negeri 15 Banda Aceh</option>
+                    <option value="SMA Labschool Banda Aceh">SMA Labschool Banda Aceh</option>
+                    <option value="SMA Muhammadiyah 1 Banda Aceh">SMA Muhammadiyah 1 Banda Aceh</option>
+                    <option value="SMA Muhammadiyah 2 Banda Aceh">SMA Muhammadiyah 2 Banda Aceh</option>
+                    <option value="SMA Al-Masry Banda Aceh">SMA Al-Masry Banda Aceh</option>
+                    <option value="SMA Ulumul Quran Banda Aceh">SMA Ulumul Quran Banda Aceh</option>
+                    <option value="SMA IT Al-Fityan Banda Aceh">SMA IT Al-Fityan Banda Aceh</option>
+                    <option value="Lainnya">Lainnya</option>
+                  </select>
+                </label>
+
+                <label>
+                  <span>Lokasi kejadian</span>
+                  <input type="text" id="lokasiKejadian" name="lokasiKejadian" placeholder="Contoh: Kelas XI-2, Koridor sekolah" required />
+                </label>
+
+                <label>
+                  <span>Tanggal kejadian</span>
+                  <input type="date" id="tanggalKejadian" name="tanggalKejadian" required />
+                </label>
+
+                <label>
+                  <span>Lingkungan sekolah</span>
+                  <select id="lingkunganSekolah" name="lingkunganSekolah" required>
+                    <option value="">Pilih lokasi</option>
+                    <option value="Kelas">Kelas</option>
+                    <option value="Koridor">Koridor</option>
+                    <option value="Perpustakaan">Perpustakaan</option>
+                    <option value="Lapangan">Lapangan</option>
+                    <option value="Kantin">Kantin</option>
+                    <option value="Toilet">Toilet</option>
+                    <option value="Lainnya">Lainnya</option>
+                  </select>
+                </label>
+              </div>
+
+              <label>
+                <span>Deskripsi kejadian</span>
+                <textarea id="deskripsiKejadian" name="deskripsiKejadian" rows="6" placeholder="Jelaskan kejadian secara singkat dan jelas..." required></textarea>
+              </label>
+
+              <button type="submit" class="btn btn-primary submit-btn">Simpan Laporan</button>
+            </form>
+
+            <aside class="report-panel">
+              <div class="panel-title">Laporan tersimpan</div>
+              <div id="reportsList" class="reports-list" aria-live="polite">
+                <p class="empty-state">Belum ada laporan yang disimpan.</p>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="about" id="tentang">
+        <div class="container about-grid">
+          <div class="about-card">
+            <span class="eyebrow">Tentang RCS</span>
+            <h2>Menghubungkan siswa dengan dukungan yang mereka butuhkan.</h2>
+            <p>
+              RCS hadir sebagai platform yang menjadi wadah bagi siswa untuk
+              berbagi masalah, menemukan solusi, dan merasa didengar. Kami
+              percaya bahwa lingkungan belajar yang aman dan sehat adalah dasar
+              dari masa depan yang lebih baik.
+            </p>
+          </div>
+          <div class="about-points">
+            <div>
+              <strong>01</strong>
+              <p>Lingkungan aman dan penuh empati.</p>
+            </div>
+            <div>
+              <strong>02</strong>
+              <p>Dukungan dari komunitas dan edukasi yang relevan.</p>
+            </div>
+            <div>
+              <strong>03</strong>
+              <p>Fokus pada kesejahteraan pendidikan dan kesehatan mental.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="faq container" id="faq">
+        <div class="section-heading center">
+          <span class="eyebrow">FAQ</span>
+          <h2>Pertanyaan yang sering ditanyakan</h2>
+        </div>
+
+        <div class="faq-list">
+          <details open>
+            <summary>Apa itu RCS?</summary>
+            <p>
+              RCS adalah singkatan dari Ruang Curhat Siswa, platform yang
+              membantu siswa mendapatkan dukungan, edukasi, serta ruang aman
+              untuk berbagi masalah.
+            </p>
+          </details>
+
+          <details>
+            <summary>Apakah RCS hanya untuk masalah perundungan?</summary>
+            <p>
+              Tidak. RCS juga membantu siswa menghadapi tekanan akademik,
+              masalah sosial, kecemasan, dan kebutuhan emosional lainnya.
+            </p>
+          </details>
+
+          <details>
+            <summary>Apakah platform ini aman untuk digunakan?</summary>
+            <p>
+              Ya. RCS dibuat dengan pendekatan yang aman, empatik, dan
+              berfokus pada privasi serta kenyamanan pengguna.
+            </p>
+          </details>
+        </div>
+      </section>
+
+      <section class="cta container" id="kontak">
+        <div class="cta-box">
+          <div>
+            <span class="eyebrow">Hubungi</span>
+            <h2>Siap untuk mulai curhat dan berbagi?</h2>
+          </div>
+          <a href="mailto:hello@rcsstudent.id" class="btn btn-primary">hello@rcsstudent.id</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <p>© <span id="year"></span> RCS - Ruang Curhat Siswa</p>
+        <p>Building a safer school environment.</p>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+

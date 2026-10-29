@@ -3,10 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Dashboard BK - RCS Ruang Curhat Siswa"
-    />
+    <meta name="description" content="Dashboard BK - RCS Ruang Curhat Siswa" />
     <title>Dashboard BK | RCS</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -58,18 +55,10 @@
 
             <label>
               <span>Password</span>
-              <input
-                id="adminPassword"
-                type="password"
-                placeholder="Masukkan password"
-                required
-              />
+              <input id="adminPassword" type="password" placeholder="Masukkan password" required />
             </label>
 
-            <button type="submit" class="btn btn-primary full-width">
-              Masuk Dashboard
-            </button>
-
+            <button type="submit" class="btn btn-primary full-width">Masuk Dashboard</button>
             <p id="authError" class="auth-error" aria-live="polite"></p>
             <p class="auth-note">Demo password: <strong>RCS2026</strong></p>
           </form>
@@ -81,9 +70,7 @@
               <span class="eyebrow">Monitoring BK</span>
               <h1>Dashboard Laporan Siswa</h1>
             </div>
-            <button id="adminLogoutBtn" type="button" class="btn btn-secondary">
-              Keluar
-            </button>
+            <button id="adminLogoutBtn" type="button" class="btn btn-secondary">Keluar</button>
           </div>
 
           <div class="summary-grid" id="summaryGrid">
@@ -165,4 +152,3 @@
     <script src="script.js"></script>
   </body>
 </html>
-

@@ -895,8 +895,8 @@ textarea {
   }
 
   .hero-actions {
-    display: grid;
     grid-template-columns: 1fr;
+    display: grid;
   }
 
   .btn {
@@ -912,4 +912,3 @@ textarea {
     align-items: flex-start;
   }
 }
-

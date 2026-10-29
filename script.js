@@ -1,1169 +1,274 @@
-* {
-  box-sizing: border-box;
-}
-
-:root {
-  --bg: #f5f7fb;
-  --bg-strong: #eff2ff;
-  --surface: rgba(255, 255, 255, 0.72);
-  --surface-strong: rgba(255, 255, 255, 0.94);
-  --primary: #4f46e5;
-  --primary-2: #6d7aff;
-  --primary-deep: #1f2a6d;
-  --teal: #14b8a6;
-  --text: #1d2433;
-  --muted: #667085;
-  --line: rgba(148, 163, 184, 0.2);
-  --shadow-soft: 0 18px 40px rgba(31, 42, 109, 0.08);
-  --shadow-card: 0 16px 38px rgba(15, 23, 42, 0.08);
-  --danger: #ef4444;
-  --success: #10b981;
-  --warning: #f59e0b;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-  font-family: "Inter", sans-serif;
-  background:
-    radial-gradient(circle at top left, rgba(79, 70, 229, 0.12), transparent 28%),
-    radial-gradient(circle at bottom right, rgba(20, 184, 166, 0.11), transparent 22%),
-    linear-gradient(180deg, #f8fafc 0%, #eef3ff 100%);
-  color: var(--text);
-  position: relative;
-}
-
-.page-glow {
-  position: fixed;
-  width: 520px;
-  height: 520px;
-  border-radius: 50%;
-  filter: blur(70px);
-  opacity: 0.28;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.glow-one {
-  top: -120px;
-  left: -120px;
-  background: rgba(79, 70, 229, 0.22);
-}
-
-.glow-two {
-  right: -80px;
-  bottom: 40px;
-  background: rgba(20, 184, 166, 0.18);
-}
-
-header,
-main,
-footer {
-  position: relative;
-  z-index: 1;
-}
-
-img {
-  max-width: 100%;
-  display: block;
-}
-
-a {
-  text-decoration: none;
-}
-
-input,
-select,
-textarea,
-button {
-  font: inherit;
-}
-
-.container {
-  width: min(1120px, calc(100% - 32px));
-  margin: 0 auto;
-}
-
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  backdrop-filter: blur(18px);
-  background: rgba(255, 255, 255, 0.65);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.16);
-}
-
-.nav {
-  height: 82px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 26px;
-}
-
-.brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  color: var(--primary-deep);
-}
-
-.brand-mark {
-  width: 34px;
-  height: 34px;
-  display: grid;
-  place-items: center;
-  border-radius: 12px;
-  background: linear-gradient(135deg, var(--primary), var(--teal));
-  color: #fff;
-  box-shadow: 0 14px 28px rgba(79, 70, 229, 0.25);
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
-  flex-wrap: wrap;
-}
-
-.nav-links a {
-  color: var(--text);
-  font-weight: 500;
-  opacity: 0.8;
-  transition: opacity 0.2s ease;
-}
-
-.nav-links a:hover {
-  opacity: 1;
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  cursor: pointer;
-  border-radius: 999px;
-  padding: 14px 22px;
-  font-weight: 600;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
-}
-
-.btn:hover {
-  transform: translateY(-1px);
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, var(--primary), var(--primary-2));
-  color: #fff;
-  box-shadow: 0 14px 30px rgba(79, 70, 229, 0.22);
-}
-
-.btn-primary.light {
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow: none;
-}
-
-.btn-secondary {
-  background: rgba(79, 70, 229, 0.08);
-  color: var(--primary-deep);
-  border: 1px solid rgba(79, 70, 229, 0.08);
-}
-
-.hero {
-  padding: 84px 0 72px;
-}
-
-.hero-grid {
-  display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: 42px;
-  align-items: center;
-}
-
-.badge,
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(79, 70, 229, 0.07);
-  border: 1px solid rgba(79, 70, 229, 0.08);
-  color: var(--primary-deep);
-  border-radius: 999px;
-  padding: 8px 14px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.eyebrow.white {
-  background: rgba(255,255,255,0.08);
-  border-color: rgba(255,255,255,0.15);
-  color: #fff;
-}
-
-.hero-content h1 {
-  margin: 18px 0 18px;
-  font-size: clamp(2.8rem, 5vw, 4.7rem);
-  line-height: 1.08;
-  letter-spacing: -0.06em;
-  color: #101828;
-}
-
-.hero-content p {
-  max-width: 620px;
-  margin: 0;
-  color: var(--muted);
-  font-size: 1.04rem;
-  line-height: 1.9;
-}
-
-.hero-actions {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-top: 28px;
-}
-
-.hero-stats {
-  list-style: none;
-  padding: 0;
-  margin: 36px 0 0;
-  display: flex;
-  gap: 28px;
-  flex-wrap: wrap;
-}
-
-.hero-stats li {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.hero-stats strong {
-  font-size: 1.45rem;
-  color: var(--primary-deep);
-}
-
-.hero-stats span {
-  color: var(--muted);
-}
-
-.hero-card {
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  border-radius: 28px;
-  box-shadow: var(--shadow-card);
-  overflow: hidden;
-  backdrop-filter: blur(8px);
-}
-
-.card-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 16px 18px;
-  background: rgba(148, 163, 184, 0.06);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
-}
-
-.dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-.dot-red { background: #f87171; }
-.dot-yellow { background: #fbbf24; }
-.dot-green { background: #34d399; }
-
-.card-body {
-  padding: 26px;
-}
-
-.mini-card {
-  padding: 20px;
-  border-radius: 20px;
-  background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(20, 184, 166, 0.12));
-  border: 1px solid rgba(79, 70, 229, 0.08);
-  display: grid;
-  gap: 8px;
-}
-
-.mini-label {
-  color: var(--primary);
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 700;
-}
-
-.mini-card strong {
-  color: var(--primary-deep);
-  font-size: 1.7rem;
-}
-
-.mini-card small {
-  color: var(--muted);
-}
-
-.info-list {
-  display: grid;
-  gap: 14px;
-  margin-top: 24px;
-}
-
-.info-list div {
-  background: rgba(15, 23, 42, 0.02);
-  border: 1px solid rgba(148, 163, 184, 0.1);
-  border-radius: 14px;
-  padding: 14px 16px;
-  color: var(--text);
-  font-weight: 500;
-}
-
-.features,
-.faq,
-.report-section {
-  padding: 90px 0;
-}
-
-.section-heading {
-  margin-bottom: 26px;
-}
-
-.section-heading.center {
-  text-align: center;
-}
-
-.section-heading h2,
-.report-header h2 {
-  margin: 16px 0 0;
-  font-size: clamp(2.1rem, 4vw, 3rem);
-  letter-spacing: -0.05em;
-  color: #111827;
-}
-
-.feature-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
-}
-
-.feature-item {
-  background: rgba(255,255,255,0.72);
-  border: 1px solid rgba(148,163,184,0.14);
-  border-radius: 26px;
-  padding: 28px 22px;
-  box-shadow: var(--shadow-soft);
-}
-
-.icon {
-  width: 62px;
-  height: 62px;
-  display: grid;
-  place-items: center;
-  border-radius: 18px;
-  background: linear-gradient(135deg, rgba(79,70,229,0.12), rgba(20,184,166,0.14));
-  margin-bottom: 18px;
-  font-size: 1.9rem;
-}
-
-.feature-item h3 {
-  margin: 0 0 10px;
-  font-size: 1.35rem;
-}
-
-.feature-item p,
-.about-card p,
-.faq-list p,
-.about-points p {
-  margin: 0;
-  color: var(--muted);
-  line-height: 1.8;
-}
-
-.report-header {
-  text-align: center;
-  margin-bottom: 28px;
-}
-
-.report-layout {
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 28px;
-  align-items: start;
-}
-
-.report-form,
-.report-panel,
-.about-card,
-.faq-list details {
-  background: rgba(255,255,255,0.82);
-  border: 1px solid rgba(148,163,184,0.14);
-  border-radius: 24px;
-  box-shadow: var(--shadow-card);
-}
-
-.report-form {
-  padding: 28px;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
-}
-
-label {
-  display: grid;
-  gap: 10px;
-  margin-bottom: 20px;
-  color: var(--text);
-  font-weight: 600;
-}
-
-label span {
-  font-size: 0.95rem;
-}
-
-input,
-select,
-textarea {
-  width: 100%;
-  border: 1px solid rgba(148, 163, 184, 0.28);
-  background: rgba(255,255,255,0.95);
-  border-radius: 14px;
-  padding: 14px 16px;
-  color: var(--text);
-  outline: none;
-  transition: border-color 0.18s ease, box-shadow 0.18s ease;
-}
-
-input:focus,
-select:focus,
-textarea:focus {
-  border-color: rgba(79, 70, 229, 0.45);
-  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.08);
-}
-
-textarea {
-  resize: vertical;
-  min-height: 150px;
-}
-
-.submit-btn {
-  width: 100%;
-  margin-top: 8px;
-}
-
-.report-panel {
-  padding: 24px 20px 18px;
-}
-
-.panel-title {
-  margin-bottom: 18px;
-  font-weight: 700;
-  font-size: 1.1rem;
-  color: var(--primary-deep);
-}
-
-.reports-list {
-  display: grid;
-  gap: 14px;
-}
-
-.empty-state,
-.empty-row {
-  margin: 0;
-  padding: 20px;
-  border-radius: 14px;
-  background: rgba(148,163,184,0.06);
-  color: var(--muted);
-  border: 1px dashed rgba(148,163,184,0.35);
-  text-align: center;
-}
-
-.report-item {
-  background: rgba(248,250,252,0.9);
-  border: 1px solid rgba(148,163,184,0.14);
-  border-radius: 18px;
-  padding: 16px;
-}
-
-.report-item-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 8px;
-}
-
-.report-item h4 {
-  margin: 0;
-  font-size: 1rem;
-}
-
-.delete-btn {
-  border: none;
-  border-radius: 999px;
-  background: rgba(239, 68, 68, 0.1);
-  color: var(--danger);
-  padding: 6px 10px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.report-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  color: var(--muted);
-  font-size: 0.8rem;
-  margin: 10px 0;
-}
-
-.report-item p {
-  margin: 0;
-  color: var(--text);
-  line-height: 1.7;
-}
-
-.about {
-  background: rgba(79, 70, 229, 0.03);
-  padding: 84px 0;
-}
-
-.about-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 28px;
-  align-items: center;
-}
-
-.about-card {
-  padding: 32px;
-}
-
-.about-card h2 {
-  margin: 18px 0;
-  font-size: clamp(2rem, 4vw, 2.8rem);
-  line-height: 1.25;
-  letter-spacing: -0.05em;
-}
-
-.about-points {
-  display: grid;
-  gap: 20px;
-}
-
-.about-points div {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-  background: rgba(255,255,255,0.74);
-  border: 1px solid rgba(148,163,184,0.14);
-  border-radius: 18px;
-  padding: 18px 20px;
-}
-
-.about-points strong {
-  min-width: 42px;
-  font-size: 1.5rem;
-  color: var(--primary);
-}
-
-.faq-list {
-  display: grid;
-  gap: 18px;
-  max-width: 860px;
-  margin: 0 auto;
-}
-
-.faq-list details {
-  padding: 18px 20px;
-}
-
-.faq-list summary {
-  cursor: pointer;
-  font-weight: 600;
-  list-style: none;
-}
-
-.faq-list summary::-webkit-details-marker {
-  display: none;
-}
-
-.faq-list p {
-  margin-top: 12px;
-}
-
-.cta {
-  padding: 18px 0 90px;
-}
-
-.cta-box {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  background: linear-gradient(135deg, #182538 0%, #253a70 100%);
-  border-radius: 30px;
-  padding: 32px 40px;
-  color: #fff;
-  box-shadow: 0 24px 52px rgba(17, 24, 39, 0.14);
-}
-
-.cta-box h2 {
-  margin: 12px 0 0;
-  font-size: clamp(1.8rem, 4vw, 2.8rem);
-  letter-spacing: -0.05em;
-}
-
-.footer {
-  padding: 28px 0 54px;
-}
-
-.footer-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  color: var(--muted);
-  border-top: 1px solid rgba(148,163,184,0.2);
-  padding-top: 24px;
-}
-
-.admin-page {
-  padding: 64px 0 90px;
-  min-height: calc(100vh - 82px);
-}
-
-.auth-shell {
-  min-height: 70vh;
-  display: grid;
-  place-items: center;
-}
-
-.auth-card {
-  width: min(520px, calc(100% - 32px));
-  background: rgba(255,255,255,0.8);
-  border: 1px solid rgba(148,163,184,0.14);
-  border-radius: 30px;
-  padding: 32px 28px 28px;
-  box-shadow: var(--shadow-card);
-}
-
-.auth-card h2 {
-  margin: 18px 0 10px;
-  font-size: clamp(2rem, 5vw, 2.6rem);
-  letter-spacing: -0.05em;
-}
-
-.auth-card p {
-  color: var(--muted);
-  line-height: 1.8;
-  margin: 0 0 22px;
-}
-
-.auth-form {
-  display: grid;
-  gap: 18px;
-}
-
-.auth-form label {
-  display: grid;
-  gap: 10px;
-  font-weight: 600;
-}
-
-.auth-form input,
-.auth-form select {
-  width: 100%;
-  border: 1px solid rgba(148,163,184,0.28);
-  background: rgba(255,255,255,0.96);
-  border-radius: 14px;
-  padding: 14px 16px;
-  color: var(--text);
-}
-
-.auth-error {
-  min-height: 24px;
-  font-size: 0.88rem;
-  color: var(--danger);
-  margin: 0;
-}
-
-.auth-note {
-  font-size: 0.82rem;
-  margin: 0;
-  color: var(--muted);
-}
-
-.full-width {
-  width: 100%;
-}
-
-.dashboard-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  margin-bottom: 28px;
-}
-
-.dashboard-header h1 {
-  margin: 14px 0 0;
-  font-size: clamp(2.1rem, 4vw, 3rem);
-  letter-spacing: -0.05em;
-}
-
-.summary-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 18px;
-  margin-bottom: 24px;
-}
-
-.summary-card {
-  border-radius: 22px;
-  padding: 22px 20px;
-  color: #fff;
-  box-shadow: 0 18px 35px rgba(31, 42, 109, 0.08);
-}
-
-.summary-card span {
-  display: block;
-  font-size: 0.8rem;
-  opacity: 0.9;
-}
-
-.summary-card strong {
-  display: block;
-  margin-top: 8px;
-  font-size: clamp(2rem, 4vw, 2.5rem);
-  line-height: 1;
-}
-
-.accent-blue { background: linear-gradient(135deg, #2563eb, #4f46e5); }
-.accent-green { background: linear-gradient(135deg, #059669, #10b981); }
-.accent-gold { background: linear-gradient(135deg, #d97706, #f59e0b); }
-.accent-red { background: linear-gradient(135deg, #dc2626, #ef4444); }
-
-.dashboard-controls {
-  display: grid;
-  grid-template-columns: 1.3fr 1fr 0.8fr;
-  gap: 18px;
-  margin-bottom: 18px;
-}
-
-.filter-group label {
-  display: grid;
-  gap: 10px;
-  font-weight: 600;
-}
-
-.filter-group input,
-.filter-group select {
-  width: 100%;
-  border: 1px solid rgba(148, 163, 184, 0.28);
-  background: rgba(255,255,255,0.96);
-  border-radius: 14px;
-  padding: 12px 14px;
-  color: var(--text);
-}
-
-.dashboard-table-wrap {
-  background: rgba(255,255,255,0.82);
-  border: 1px solid rgba(148,163,184,0.14);
-  border-radius: 26px;
-  box-shadow: var(--shadow-card);
-  overflow: hidden;
-}
-
-.table-header {
-  padding: 22px 24px 12px;
-}
-
-.table-header h2 {
-  margin: 0;
-  font-size: 1.35rem;
-}
-
-.table-responsive {
-  overflow-x: auto;
-}
-
-.report-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 820px;
-}
-
-.report-table th,
-.report-table td {
-  padding: 16px 20px;
-  text-align: left;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
-  vertical-align: top;
-}
-
-.report-table th {
-  background: rgba(79, 70, 229, 0.04);
-  color: var(--primary-deep);
-}
-
-.status-badge {
-  display: inline-block;
-  padding: 7px 10px;
-  border-radius: 999px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  border: 1px solid transparent;
-}
-
-.status-baru { background: rgba(59,130,246,0.1); color: #1d4ed8; border-color: rgba(59,130,246,0.2); }
-.status-ditinjau { background: rgba(245,158,11,0.12); color: #b45309; border-color: rgba(245,158,11,0.2); }
-.status-selesai { background: rgba(16,185,129,0.12); color: #047857; border-color: rgba(16,185,129,0.2); }
-
-[hidden] {
-  display: none !important;
-}
-
-@media (max-width: 820px) {
-  .nav {
-    flex-wrap: wrap;
-    justify-content: center;
-    height: auto;
-    padding: 18px 0;
+const STORAGE_KEY = "rcsReports";
+const ADMIN_SESSION_KEY = "rcsAdminSession";
+
+const escapeHtml = (value = "") =>
+  String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+const normalizeSchoolPassword = (value = "") =>
+  value
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+
+const getReports = () => {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    return Array.isArray(saved) ? saved : [];
+  } catch {
+    return [];
+  }
+};
+
+const saveReports = (reports) => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(reports));
+};
+
+const renderLandingReports = () => {
+  const list = document.getElementById("reportsList");
+  if (!list) return;
+
+  const reports = getReports();
+  if (!reports.length) {
+    list.innerHTML = '<p class="empty-state">Belum ada laporan yang disimpan.</p>';
+    return;
   }
 
-  .nav-links {
-    width: 100%;
-    justify-content: center;
+  list.innerHTML = reports
+    .slice()
+    .reverse()
+    .map(
+      (report) => `
+        <article class="report-item">
+          <div class="report-item-top">
+            <h4>${escapeHtml(report.namaPelapor)}</h4>
+            <button type="button" class="delete-btn" data-id="${report.id}">Hapus</button>
+          </div>
+          <div class="report-meta">
+            <span>${escapeHtml(report.statusLaporan)}</span>
+            <span>${escapeHtml(report.asalSekolah)}</span>
+            <span>${escapeHtml(report.tanggalKejadian)}</span>
+          </div>
+          <p>${escapeHtml(report.deskripsiKejadian)}</p>
+        </article>
+      `
+    )
+    .join("");
+};
+
+const renderAdminDashboard = () => {
+  const totalReportsEl = document.getElementById("totalReports");
+  const newReportsEl = document.getElementById("newReports");
+  const reviewReportsEl = document.getElementById("reviewReports");
+  const doneReportsEl = document.getElementById("doneReports");
+  const tableBody = document.getElementById("adminReportTableBody");
+  const searchInput = document.getElementById("searchInput");
+  const schoolFilter = document.getElementById("schoolFilter");
+  const statusFilter = document.getElementById("statusFilter");
+
+  if (!totalReportsEl || !tableBody) return;
+
+  const reports = getReports();
+  const total = reports.length;
+  const newCount = reports.filter((report) => report.statusLaporan === "Baru").length;
+  const reviewCount = reports.filter((report) => report.statusLaporan === "Ditinjau").length;
+  const doneCount = reports.filter((report) => report.statusLaporan === "Selesai").length;
+
+  totalReportsEl.textContent = String(total);
+  newReportsEl.textContent = String(newCount);
+  reviewReportsEl.textContent = String(reviewCount);
+  doneReportsEl.textContent = String(doneCount);
+
+  const filters = {
+    search: (searchInput ? searchInput.value : "").trim().toLowerCase(),
+    school: schoolFilter ? schoolFilter.value : "",
+    status: statusFilter ? statusFilter.value : "",
+  };
+
+  const filteredReports = reports.filter((report) => {
+    const matchesSearch =
+      !filters.search ||
+      `${report.namaPelapor} ${report.asalSekolah} ${report.lokasiKejadian}`
+        .toLowerCase()
+        .includes(filters.search);
+
+    const matchesSchool = !filters.school || report.asalSekolah === filters.school;
+    const matchesStatus = !filters.status || report.statusLaporan === filters.status;
+
+    return matchesSearch && matchesSchool && matchesStatus;
+  });
+
+  if (!filteredReports.length) {
+    tableBody.innerHTML = '<tr><td colspan="6" class="empty-row">Belum ada laporan.</td></tr>';
+    return;
   }
 
-  .hero-grid,
-  .feature-grid,
-  .report-layout,
-  .about-grid,
-  .form-grid,
-  .summary-grid,
-  .dashboard-controls {
-    grid-template-columns: 1fr;
-    display: grid;
+  const statusClassMap = {
+    Baru: "status-baru",
+    Ditinjau: "status-ditinjau",
+    Selesai: "status-selesai",
+  };
+
+  tableBody.innerHTML = filteredReports
+    .slice()
+    .reverse()
+    .map(
+      (report) => `
+        <tr>
+          <td>${escapeHtml(report.namaPelapor)}</td>
+          <td>${escapeHtml(report.asalSekolah)}</td>
+          <td>${escapeHtml(report.lokasiKejadian)}</td>
+          <td>${escapeHtml(report.tanggalKejadian)}</td>
+          <td><span class="status-badge ${statusClassMap[report.statusLaporan] || ""}">${escapeHtml(report.statusLaporan)}</span></td>
+          <td>${escapeHtml(report.deskripsiKejadian)}</td>
+        </tr>
+      `
+    )
+    .join("");
+};
+
+const populateSchoolFilter = () => {
+  const schoolFilter = document.getElementById("schoolFilter");
+  if (!schoolFilter) return;
+
+  const reports = getReports();
+  const uniqueSchools = [...new Set(reports.map((report) => report.asalSekolah).filter(Boolean))];
+
+  schoolFilter.innerHTML = ['<option value="">Semua sekolah</option>']
+    .concat(
+      uniqueSchools.map(
+        (school) => `<option value="${escapeHtml(school)}">${escapeHtml(school)}</option>`
+      )
+    )
+    .join("");
+};
+
+const initLandingPage = () => {
+  const form = document.getElementById("laporanForm");
+  if (!form) return;
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const report = {
+      id: Date.now().toString(),
+      namaPelapor: document.getElementById("namaPelapor").value.trim(),
+      statusLaporan: document.getElementById("statusLaporan").value,
+      asalSekolah: document.getElementById("asalSekolah").value,
+      lokasiKejadian: document.getElementById("lokasiKejadian").value.trim(),
+      tanggalKejadian: document.getElementById("tanggalKejadian").value,
+      lingkunganSekolah: document.getElementById("lingkunganSekolah").value,
+      deskripsiKejadian: document.getElementById("deskripsiKejadian").value.trim(),
+    };
+
+    if (!report.namaPelapor || !report.asalSekolah || !report.lokasiKejadian || !report.tanggalKejadian || !report.deskripsiKejadian) {
+      return;
+    }
+
+    const reports = getReports();
+    reports.push(report);
+    saveReports(reports);
+    renderLandingReports();
+    populateSchoolFilter();
+    renderAdminDashboard();
+    form.reset();
+  });
+
+  document.getElementById("reportsList")?.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+
+    const button = target.closest(".delete-btn");
+    if (!button) return;
+
+    const id = button.dataset.id;
+    if (!id) return;
+
+    const updatedReports = getReports().filter((report) => report.id !== id);
+    saveReports(updatedReports);
+    renderLandingReports();
+    populateSchoolFilter();
+    renderAdminDashboard();
+  });
+
+  renderLandingReports();
+  populateSchoolFilter();
+};
+
+const initAdminPage = () => {
+  const adminForm = document.getElementById("adminLoginForm");
+  const adminDashboard = document.getElementById("adminDashboard");
+  const adminAuth = document.getElementById("adminAuth");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  const isLoggedIn = localStorage.getItem(ADMIN_SESSION_KEY) === "true";
+  if (isLoggedIn) {
+    if (adminAuth) adminAuth.hidden = true;
+    if (adminDashboard) adminDashboard.hidden = false;
   }
 
-  .dashboard-header,
-  .footer-inner,
-  .cta-box {
-    flex-direction: column;
-    align-items: flex-start;
+  if (adminForm) {
+    adminForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const selectedSchool = document.getElementById("adminSchool")?.value || "";
+      const password = document.getElementById("adminPassword")?.value || "";
+      const errorText = document.getElementById("adminError");
+
+      const normalizedSchool = normalizeSchoolPassword(selectedSchool);
+      const normalizedPassword = normalizeSchoolPassword(password);
+
+      if (!selectedSchool || !password) {
+        if (errorText) errorText.textContent = "Pilih sekolah dan masukkan password.";
+        return;
+      }
+
+      if (normalizedPassword === normalizedSchool) {
+        localStorage.setItem(ADMIN_SESSION_KEY, "true");
+        if (adminAuth) adminAuth.hidden = true;
+        if (adminDashboard) adminDashboard.hidden = false;
+        if (errorText) errorText.textContent = "";
+        renderAdminDashboard();
+        return;
+      }
+
+      if (errorText) errorText.textContent = "Password salah. Coba cek kembali data sekolah dan password.";
+    });
   }
 
-  .cta-box {
-    justify-content: center;
-    width: 100%;
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem(ADMIN_SESSION_KEY);
+      if (adminAuth) adminAuth.hidden = false;
+      if (adminDashboard) adminDashboard.hidden = true;
+      document.getElementById("adminPassword").value = "";
+      document.getElementById("adminSchool").value = "";
+    });
   }
-}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  const searchInput = document.getElementById("searchInput");
+  const schoolFilter = document.getElementById("schoolFilter");
+  const statusFilter = document.getElementById("statusFilter");
+
+  [searchInput, schoolFilter, statusFilter].forEach((element) => {
+    if (element) {
+      element.addEventListener("input", renderAdminDashboard);
+      element.addEventListener("change", renderAdminDashboard);
+    }
+  });
+
+  renderAdminDashboard();
+};
+
+const initYear = () => {
+  const yearEl = document.getElementById("year");
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  initYear();
+  initLandingPage();
+  initAdminPage();
+});

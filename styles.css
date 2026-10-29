@@ -1,168 +1,275 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const STORAGE_KEY = "rcsReports";
-  const ADMIN_SESSION_KEY = "rcsAdminSession";
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard BK | RCS</title>
+    <meta name="description" content="Dashboard BK untuk memantau laporan siswa di RCS." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="admin">
+    <div class="page-glow glow-one"></div>
+    <div class="page-glow glow-two"></div>
 
-  const authSection = document.getElementById("adminAuth");
-  const dashboardSection = document.getElementById("adminDashboard");
-  const adminLoginForm = document.getElementById("adminLoginForm");
-  const adminError = document.getElementById("adminError");
-  const adminSchool = document.getElementById("adminSchool");
-  const adminPassword = document.getElementById("adminPassword");
-  const logoutBtn = document.getElementById("logoutBtn");
+    <header class="header">
+      <nav class="nav container">
+        <div class="brand">
+          <span class="brand-mark">R</span>
+          <span>RCS</span>
+        </div>
 
-  function getReports() {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? JSON.parse(stored) : [];
-    } catch (error) {
-      console.error("Gagal membaca localStorage:", error);
-      return [];
-    }
-  }
+        <div class="nav-links">
+          <a href="index.html">Beranda</a>
+          <a href="admin.html">Dashboard BK</a>
+        </div>
 
-  function saveReports(reports) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(reports));
-  }
+        <a href="index.html#laporan" class="btn btn-primary">Tambah Laporan</a>
+      </nav>
+    </header>
 
-  function formatDate(dateString) {
-    if (!dateString) return "-";
-    const date = new Date(dateString + "T00:00:00");
-    return new Intl.DateTimeFormat("id-ID", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    }).format(date);
-  }
+    <main class="admin-page">
+      <section id="adminAuth" class="auth-shell">
+        <div class="auth-card">
+          <span class="eyebrow">Akses Admin BK</span>
+          <h2>Masuk ke dashboard</h2>
+          <p>Guru BK harus memilih sekolah dan memasukkan password sesuai akun sekolah.</p>
 
-  function getExpectedPassword(schoolName) {
-    return schoolName ? schoolName.replace(/\s+/g, "") : "";
-  }
+          <form id="adminLoginForm" class="auth-form">
+            <label>
+              <span>Pilih sekolah</span>
+              <select id="adminSchool" required>
+                <option value="">Pilih sekolah</option>
+                <option value="SMA Negeri 1 Banda Aceh">SMA Negeri 1 Banda Aceh</option>
+                <option value="SMA Negeri 2 Banda Aceh">SMA Negeri 2 Banda Aceh</option>
+                <option value="SMA Negeri 3 Banda Aceh">SMA Negeri 3 Banda Aceh</option>
+                <option value="SMA Negeri 4 Banda Aceh">SMA Negeri 4 Banda Aceh</option>
+                <option value="SMA Negeri 5 Banda Aceh">SMA Negeri 5 Banda Aceh</option>
+                <option value="SMA Negeri 6 Banda Aceh">SMA Negeri 6 Banda Aceh</option>
+                <option value="SMA Negeri 7 Banda Aceh">SMA Negeri 7 Banda Aceh</option>
+                <option value="SMA Negeri 8 Banda Aceh">SMA Negeri 8 Banda Aceh</option>
+                <option value="SMA Negeri 9 Banda Aceh">SMA Negeri 9 Banda Aceh</option>
+                <option value="SMA Negeri 10 Banda Aceh">SMA Negeri 10 Banda Aceh</option>
+                <option value="SMA Negeri 11 Banda Aceh">SMA Negeri 11 Banda Aceh</option>
+                <option value="SMA Negeri 12 Banda Aceh">SMA Negeri 12 Banda Aceh</option>
+                <option value="SMA Negeri 13 Banda Aceh">SMA Negeri 13 Banda Aceh</option>
+                <option value="SMA Negeri 14 Banda Aceh">SMA Negeri 14 Banda Aceh</option>
+                <option value="SMA Negeri 15 Banda Aceh">SMA Negeri 15 Banda Aceh</option>
+                <option value="SMA Labschool Banda Aceh">SMA Labschool Banda Aceh</option>
+                <option value="SMA Muhammadiyah 1 Banda Aceh">SMA Muhammadiyah 1 Banda Aceh</option>
+                <option value="SMA Muhammadiyah 2 Banda Aceh">SMA Muhammadiyah 2 Banda Aceh</option>
+                <option value="SMA Al-Masry Banda Aceh">SMA Al-Masry Banda Aceh</option>
+                <option value="SMA Ulumul Quran Banda Aceh">SMA Ulumul Quran Banda Aceh</option>
+                <option value="SMA IT Al-Fityan Banda Aceh">SMA IT Al-Fityan Banda Aceh</option>
+              </select>
+            </label>
 
-  function setAdminAccess(isLoggedIn) {
-    if (authSection) authSection.hidden = isLoggedIn;
-    if (dashboardSection) dashboardSection.hidden = !isLoggedIn;
-    if (isLoggedIn && adminSchool) {
-      const school = localStorage.getItem(ADMIN_SESSION_KEY);
-      if (school) adminSchool.value = school;
-    }
-  }
+            <label>
+              <span>Password sekolah</span>
+              <input type="password" id="adminPassword" placeholder="Contoh: SMANegeri7BandaAceh" required />
+            </label>
 
-  function renderDashboard() {
-    const totalReportsEl = document.getElementById("totalReports");
-    const newReportsEl = document.getElementById("newReports");
-    const reviewReportsEl = document.getElementById("reviewReports");
-    const doneReportsEl = document.getElementById("doneReports");
-    const tableBody = document.getElementById("adminReportTableBody");
-    const schoolFilter = document.getElementById("schoolFilter");
-    const statusFilter = document.getElementById("statusFilter");
-    const searchInput = document.getElementById("searchInput");
+            <button type="submit" class="btn btn-primary full-width">Masuk Dashboard</button>
+            <p id="adminError" class="auth-error" role="alert"></p>
+            <p class="auth-note">Contoh: guru BK SMA Negeri 7 Banda Aceh harus memasukkan password <strong>SMANegeri7BandaAceh</strong></p>
+          </form>
+        </div>
+      </section>
 
-    if (!tableBody) return;
+      <div id="adminDashboard" hidden>
+        <section class="container dashboard-header">
+          <div>
+            <span class="eyebrow">Admin BK</span>
+            <h1>Dashboard Pemantauan Pelapor</h1>
+          </div>
+          <button id="logoutBtn" type="button" class="btn btn-primary">Keluar</button>
+        </section>
 
-    const reports = getReports();
+        <section class="container summary-grid">
+          <div class="summary-card accent-blue">
+            <span>Total Laporan</span>
+            <strong id="totalReports">0</strong>
+          </div>
+          <div class="summary-card accent-green">
+            <span>Baru</span>
+            <strong id="newReports">0</strong>
+          </div>
+          <div class="summary-card accent-gold">
+            <span>Ditinjau</span>
+            <strong id="reviewReports">0</strong>
+          </div>
+          <div class="summary-card accent-red">
+            <span>Selesai</span>
+            <strong id="doneReports">0</strong>
+          </div>
+        </section>
 
-    if (totalReportsEl) totalReportsEl.textContent = reports.length;
-    if (newReportsEl) newReportsEl.textContent = reports.filter((item) => item.statusLaporan === "Baru").length;
-    if (reviewReportsEl) reviewReportsEl.textContent = reports.filter((item) => item.statusLaporan === "Ditinjau").length;
-    if (doneReportsEl) doneReportsEl.textContent = reports.filter((item) => item.statusLaporan === "Selesai").length;
+        <section class="container dashboard-controls">
+          <div class="filter-group">
+            <label>
+              <span>Cari pelapor / sekolah</span>
+              <input type="search" id="searchInput" placeholder="Cari nama atau sekolah..." />
+            </label>
+          </div>
 
-    const uniqueSchools = [...new Set(reports.map((report) => report.asalSekolah).filter(Boolean))].sort();
+          <div class="filter-group">
+            <label>
+              <span>Filter sekolah</span>
+              <select id="schoolFilter">
+                <option value="">Semua sekolah</option>
+              </select>
+            </label>
+          </div>
 
-    if (schoolFilter) {
-      const currentValue = schoolFilter.value;
-      schoolFilter.innerHTML = '<option value="">Semua sekolah</option>' +
-        uniqueSchools.map((school) => `<option value="${school}">${school}</option>`).join("");
-      schoolFilter.value = uniqueSchools.includes(currentValue) ? currentValue : "";
-    }
+          <div class="filter-group">
+            <label>
+              <span>Status</span>
+              <select id="statusFilter">
+                <option value="">Semua status</option>
+                <option value="Baru">Baru</option>
+                <option value="Ditinjau">Ditinjau</option>
+                <option value="Selesai">Selesai</option>
+              </select>
+            </label>
+          </div>
+        </section>
 
-    const searchTerm = (searchInput?.value || "").toLowerCase();
-    const schoolTerm = schoolFilter?.value || "";
-    const statusTerm = statusFilter?.value || "";
+        <section class="container dashboard-table-wrap">
+          <div class="table-header">
+            <h2>Daftar Pelapor</h2>
+          </div>
 
-    const filteredReports = reports.filter((report) => {
-      const matchSearch =
-        !searchTerm ||
-        (report.namaPelapor || "").toLowerCase().includes(searchTerm) ||
-        (report.asalSekolah || "").toLowerCase().includes(searchTerm) ||
-        (report.deskripsiKejadian || "").toLowerCase().includes(searchTerm);
+          <div class="table-responsive">
+            <table class="report-table">
+              <thead>
+                <tr>
+                  <th>Pelapor</th>
+                  <th>Sekolah</th>
+                  <th>Lokasi</th>
+                  <th>Tanggal</th>
+                  <th>Status</th>
+                  <th>Deskripsi</th>
+                </tr>
+              </thead>
+              <tbody id="adminReportTableBody">
+                <tr>
+                  <td colspan="6" class="empty-row">Belum ada laporan.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </main>
 
-      const matchSchool = !schoolTerm || report.asalSekolah === schoolTerm;
-      const matchStatus = !statusTerm || report.statusLaporan === statusTerm;
+    <script src="script.js"></script>
+  </body>
+</html>
 
-      return matchSearch && matchSchool && matchStatus;
-    });
 
-    if (filteredReports.length === 0) {
-      tableBody.innerHTML = '<tr><td colspan="6" class="empty-row">Tidak ada laporan sesuai filter.</td></tr>';
-      return;
-    }
 
-    tableBody.innerHTML = filteredReports
-      .map((report) => `
-        <tr>
-          <td><strong>${report.namaPelapor || "Pelapor"}</strong></td>
-          <td>${report.asalSekolah || "-"}</td>
-          <td>${report.lokasiKejadian || "-"}</td>
-          <td>${formatDate(report.tanggalKejadian)}</td>
-          <td>
-            <span class="status-badge status-${(report.statusLaporan || "Baru").toLowerCase().replace(/\s+/g, "-")}">
-              ${report.statusLaporan || "Baru"}
-            </span>
-          </td>
-          <td>${report.deskripsiKejadian || "-"}</td>
-        </tr>
-      `)
-      .join("");
-  }
 
-  function handleLogin(event) {
-    event.preventDefault();
 
-    const selectedSchool = adminSchool?.value || "";
-    const enteredPassword = adminPassword?.value?.trim() || "";
-    const expectedPassword = getExpectedPassword(selectedSchool);
 
-    if (!selectedSchool || !enteredPassword) {
-      adminError.textContent = "Pilih sekolah dan isi password terlebih dahulu.";
-      return;
-    }
 
-    if (enteredPassword !== expectedPassword) {
-      adminError.textContent = `Password salah untuk ${selectedSchool}. Contoh: ${expectedPassword}`;
-      adminPassword.value = "";
-      return;
-    }
 
-    localStorage.setItem(ADMIN_SESSION_KEY, selectedSchool);
-    adminError.textContent = "";
-    setAdminAccess(true);
-    renderDashboard();
-  }
 
-  function handleLogout() {
-    localStorage.removeItem(ADMIN_SESSION_KEY);
-    if (adminPassword) adminPassword.value = "";
-    if (adminError) adminError.textContent = "";
-    setAdminAccess(false);
-  }
 
-  if (adminLoginForm) {
-    adminLoginForm.addEventListener("submit", handleLogin);
-  }
 
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", handleLogout);
-  }
 
-  const searchInput = document.getElementById("searchInput");
-  const schoolFilter = document.getElementById("schoolFilter");
-  const statusFilter = document.getElementById("statusFilter");
 
-  if (searchInput) searchInput.addEventListener("input", renderDashboard);
-  if (schoolFilter) schoolFilter.addEventListener("change", renderDashboard);
-  if (statusFilter) statusFilter.addEventListener("change", renderDashboard);
 
-  const isLoggedIn = Boolean(localStorage.getItem(ADMIN_SESSION_KEY));
-  setAdminAccess(isLoggedIn);
-  if (isLoggedIn) renderDashboard();
-});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

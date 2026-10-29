@@ -25,11 +25,12 @@
         </div>
         <div class="nav-links">
           <a href="#fitur">Fitur</a>
+          <a href="#laporan">Laporan</a>
           <a href="#tentang">Tentang</a>
           <a href="#faq">FAQ</a>
           <a href="#kontak">Kontak</a>
         </div>
-        <a href="#kontak" class="btn btn-primary">Curhat Sekarang</a>
+        <a href="#laporan" class="btn btn-primary">Buat Laporan</a>
       </nav>
     </header>
 
@@ -45,7 +46,7 @@
               tantangan keseharian dengan aman dan nyaman.
             </p>
             <div class="hero-actions">
-              <a href="#kontak" class="btn btn-primary">Mulai Curhat</a>
+              <a href="#laporan" class="btn btn-primary">Mulai Curhat</a>
               <a href="#fitur" class="btn btn-secondary">Lihat Fitur</a>
             </div>
             <ul class="hero-stats">
@@ -116,6 +117,64 @@
               mencegah, dan melawan perilaku perundungan di lingkungan sekolah.
             </p>
           </article>
+        </div>
+      </section>
+
+      <section class="report-section" id="laporan">
+        <div class="container">
+          <div class="report-header">
+            <span class="eyebrow">Laporan Kejadian</span>
+            <h2>Form lapor kejadian di lingkungan sekolah</h2>
+          </div>
+
+          <div class="report-layout">
+            <form id="laporanForm" class="report-form">
+              <div class="form-grid">
+                <label>
+                  <span>Asal sekolah</span>
+                  <input type="text" id="asalSekolah" name="asalSekolah" placeholder="Contoh: SMAN 1 Bandung" required />
+                </label>
+
+                <label>
+                  <span>Lokasi kejadian</span>
+                  <input type="text" id="lokasiKejadian" name="lokasiKejadian" placeholder="Contoh: Kelas XI-2, Koridor sekolah" required />
+                </label>
+
+                <label>
+                  <span>Tanggal kejadian</span>
+                  <input type="date" id="tanggalKejadian" name="tanggalKejadian" required />
+                </label>
+
+                <label>
+                  <span>Lingkungan sekolah</span>
+                  <select id="lingkunganSekolah" name="lingkunganSekolah" required>
+                    <option value="">Pilih lokasi</option>
+                    <option value="Kelas">Kelas</option>
+                    <option value="Koridor">Koridor</option>
+                    <option value="Perpustakaan">Perpustakaan</option>
+                    <option value="Lapangan">Lapangan</option>
+                    <option value="Kantin">Kantin</option>
+                    <option value="Toilet">Toilet</option>
+                    <option value="Lainnya">Lainnya</option>
+                  </select>
+                </label>
+              </div>
+
+              <label>
+                <span>Deskripsi kejadian</span>
+                <textarea id="deskripsiKejadian" name="deskripsiKejadian" rows="6" placeholder="Jelaskan kejadian secara singkat dan jelas..." required></textarea>
+              </label>
+
+              <button type="submit" class="btn btn-primary submit-btn">Simpan Laporan</button>
+            </form>
+
+            <aside class="report-panel">
+              <div class="panel-title">Laporan tersimpan</div>
+              <div id="reportsList" class="reports-list" aria-live="polite">
+                <p class="empty-state">Belum ada laporan yang disimpan.</p>
+              </div>
+            </aside>
+          </div>
         </div>
       </section>
 

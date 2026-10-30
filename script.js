@@ -1,8 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const yearNode = document.getElementById('year');
-  if (yearNode) {
-    yearNode.textContent = new Date().getFullYear();
-  }
+  if (yearNode) yearNode.textContent = new Date().getFullYear();
 
   const REPORTS_KEY = 'rcsReports';
   const ADMIN_KEY = 'rcsAdminLoggedIn';
@@ -18,6 +16,34 @@ document.addEventListener('DOMContentLoaded', () => {
   const statusFilter = document.getElementById('statusFilter');
   const sortFilter = document.getElementById('sortFilter');
 
+  function showToast(message) {
+    let toast = document.getElementById('rcsToast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'rcsToast';
+      toast.style.position = 'fixed';
+      toast.style.right = '20px';
+      toast.style.bottom = '20px';
+      toast.style.background = 'rgba(16, 33, 59, 0.9)';
+      toast.style.color = '#fff';
+      toast.style.padding = '12px 16px';
+      toast.style.borderRadius = '12px';
+      toast.style.boxShadow = '0 18px 40px rgba(16, 33, 59, 0.18)';
+      toast.style.zIndex = '9999';
+      toast.style.fontWeight = '700';
+      toast.style.opacity = '0';
+      toast.style.transition = 'opacity 0.25s ease';
+      document.body.appendChild(toast);
+    }
+
+    toast.textContent = message;
+    toast.style.opacity = '1';
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => {
+      toast.style.opacity = '0';
+    }, 2200);
+  }
+
   function getReports() {
     try {
       return JSON.parse(localStorage.getItem(REPORTS_KEY) || '[]');
@@ -30,9 +56,19 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem(REPORTS_KEY, JSON.stringify(reports));
   }
 
+  function normalizeStatus(value) {
+    return (value || 'Baru').trim();
+  }
+
+  function statusClass(value) {
+    const status = normalizeStatus(value);
+    if (status === 'Selesai') return 'status-selesai';
+    if (status === 'Ditinjau') return 'status-ditinjau';
+    return 'status-baru';
+  }
+
   function renderPublicReports() {
     if (!reportsList) return;
-
     const reports = getReports();
 
     if (!reports.length) {
@@ -44,8 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .slice()
       .reverse()
       .map((report) => {
-        const normalizedStatus = report.status || 'Baru';
-        const statusClass = normalizedStatus.toLowerCase().replace(/\s+/g, '-');
+        const status = normalizeStatus(report.status);
         return `
           <article class="report-item">
             <div class="report-item-top">
@@ -55,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="report-meta">
               <span>${report.asalSekolah || 'Sekolah'}</span>
               <span>${report.lingkunganSekolah || 'Lingkungan'}</span>
-              <span class="status-badge status-${statusClass}">${normalizedStatus}</span>
+              <span class="status-badge ${statusClass(status)}">${status}</span>
             </div>
             <p>${report.deskripsiKejadian || 'Tidak ada deskripsi.'}</p>
           </article>
@@ -66,23 +101,13 @@ document.addEventListener('DOMContentLoaded', () => {
     reportsList.querySelectorAll('.delete-btn').forEach((button) => {
       button.addEventListener('click', () => {
         const reportId = Number(button.dataset.id);
-        const reports = getReports().filter((item) => item.id !== reportId);
-        saveReports(reports);
+        const remaining = getReports().filter((item) => item.id !== reportId);
+        saveReports(remaining);
         renderPublicReports();
         renderAdminDashboard();
+        showToast('Laporan berhasil dihapus.');
       });
     });
-  }
-
-  function normalizeStatus(value) {
-    return (value || 'Baru').trim();
-  }
-
-  function statusClass(value) {
-    const status = normalizeStatus(value);
-    if (status === 'Selesai') return 'status-selesai';
-    if (status === 'Ditinjau') return 'status-ditinjau';
-    return 'status-baru';
   }
 
   function renderAdminDashboard() {
@@ -124,13 +149,13 @@ document.addEventListener('DOMContentLoaded', () => {
       filteredReports = filteredReports.filter((report) => normalizeStatus(report.status) === statusFilter.value);
     }
 
+    const orderMap = { Baru: 1, Ditinjau: 2, Selesai: 3 };
     if (sortFilter && sortFilter.value === 'oldest') {
       filteredReports = filteredReports.sort((a, b) => new Date(a.tanggalKejadian) - new Date(b.tanggalKejadian));
     } else if (sortFilter && sortFilter.value === 'status') {
-      const order = { Baru: 1, Ditinjau: 2, Selesai: 3 };
       filteredReports = filteredReports.sort((a, b) => {
-        const statusA = order[normalizeStatus(a.status)] || 0;
-        const statusB = order[normalizeStatus(b.status)] || 0;
+        const statusA = orderMap[normalizeStatus(a.status)] || 0;
+        const statusB = orderMap[normalizeStatus(b.status)] || 0;
         return statusB - statusA;
       });
     } else {
@@ -152,7 +177,13 @@ document.addEventListener('DOMContentLoaded', () => {
             <td>${report.lingkunganSekolah || '-'}</td>
             <td>${report.lokasiKejadian || '-'}</td>
             <td>${(report.deskripsiKejadian || '').slice(0, 120)}${(report.deskripsiKejadian || '').length > 120 ? '...' : ''}</td>
-            <td><span class="status-badge ${statusClass(status)}">${status}</span></td>
+            <td>
+              <select class="status-select" data-id="${report.id}" aria-label="Ubah status laporan">
+                <option value="Baru" ${status === 'Baru' ? 'selected' : ''}>Baru</option>
+                <option value="Ditinjau" ${status === 'Ditinjau' ? 'selected' : ''}>Ditinjau</option>
+                <option value="Selesai" ${status === 'Selesai' ? 'selected' : ''}>Selesai</option>
+              </select>
+            </td>
             <td>${report.tanggalKejadian || '-'}</td>
           </tr>
         `;
@@ -181,6 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
       saveReports(reports);
       renderPublicReports();
       renderAdminDashboard();
+      showToast('Laporan berhasil disimpan.');
       reportForm.reset();
     });
   }
@@ -198,6 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (loginPanel) loginPanel.hidden = true;
         if (adminDashboard) adminDashboard.hidden = false;
         renderAdminDashboard();
+        showToast('Login berhasil.');
       } else {
         if (authError) authError.textContent = 'Nama sekolah atau password salah.';
       }
@@ -214,30 +247,36 @@ document.addEventListener('DOMContentLoaded', () => {
       const passwordInput = document.getElementById('adminPassword');
       if (schoolInput) schoolInput.value = '';
       if (passwordInput) passwordInput.value = '';
+      showToast('Berhasil keluar.');
     });
   }
 
-  if (searchInput) {
-    searchInput.addEventListener('input', renderAdminDashboard);
+  if (tableBody) {
+    tableBody.addEventListener('change', (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLSelectElement) || !target.classList.contains('status-select')) return;
+
+      const reportId = Number(target.dataset.id);
+      const nextStatus = target.value;
+      const reports = getReports().map((item) => {
+        if (item.id === reportId) return { ...item, status: nextStatus };
+        return item;
+      });
+      saveReports(reports);
+      renderPublicReports();
+      renderAdminDashboard();
+      showToast(`Status laporan diubah menjadi ${nextStatus}.`);
+    });
   }
 
-  if (statusFilter) {
-    statusFilter.addEventListener('change', renderAdminDashboard);
-  }
-
-  if (sortFilter) {
-    sortFilter.addEventListener('change', renderAdminDashboard);
-  }
+  if (searchInput) searchInput.addEventListener('input', renderAdminDashboard);
+  if (statusFilter) statusFilter.addEventListener('change', renderAdminDashboard);
+  if (sortFilter) sortFilter.addEventListener('change', renderAdminDashboard);
 
   const isLoggedIn = localStorage.getItem(ADMIN_KEY) === 'true';
   if (loginPanel && adminDashboard) {
-    if (isLoggedIn) {
-      loginPanel.hidden = true;
-      adminDashboard.hidden = false;
-    } else {
-      loginPanel.hidden = false;
-      adminDashboard.hidden = true;
-    }
+    loginPanel.hidden = !(!isLoggedIn);
+    adminDashboard.hidden = !isLoggedIn;
   }
 
   renderPublicReports();

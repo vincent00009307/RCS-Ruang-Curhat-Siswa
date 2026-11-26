@@ -100,7 +100,9 @@
       const { data, error } = await db.rpc("submit_student_report", payload);
       setBusy(submitButton, false);
       if (error) {
-        showError(feedback, "Laporan belum terkirim. Periksa isian lalu coba lagi. (" + error.message + ")");
+        console.error("RCS report submission:", error.message);
+        if (feedback) feedback.style.color = "";
+        showError(feedback, "Laporan belum terkirim. Periksa koneksi dan isian, lalu coba lagi.");
         return;
       }
 
@@ -157,10 +159,11 @@
       const identity = Array.isArray(r.report_identities) ? r.report_identities[0] : r.report_identities;
       const name = identity?.full_name || "—";
       const className = identity?.class_name || "—";
+      const contact = identity?.contact ? '<br><small>Kontak: ' + escapeHtml(identity.contact) + '</small>' : "";
       const options = statuses.map((s) => '<option value="' + escapeHtml(s) + '"' + (r.status === s ? " selected" : "") + ">" + escapeHtml(s) + "</option>").join("");
       return '<tr>' +
         '<td>' + escapeHtml(r.report_code) + '</td>' +
-        '<td>' + escapeHtml(name) + '<br><small>' + escapeHtml(className) + '</small></td>' +
+        '<td>' + escapeHtml(name) + '<br><small>' + escapeHtml(className) + '</small>' + contact + '</td>' +
         '<td>' + escapeHtml(r.category) + '</td>' +
         '<td>' + escapeHtml(r.incident_location) + '<br><small>' + escapeHtml(formatDate(r.incident_date)) + '</small></td>' +
         '<td style="white-space:pre-wrap;max-width:360px">' + escapeHtml(r.description) + '</td>' +

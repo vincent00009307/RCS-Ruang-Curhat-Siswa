@@ -1,284 +1,289 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const yearNode = document.getElementById('year');
-  if (yearNode) yearNode.textContent = new Date().getFullYear();
+(() => {
+  "use strict";
 
-  const REPORTS_KEY = 'rcsReports';
-  const ADMIN_KEY = 'rcsAdminLoggedIn';
-  const loginForm = document.getElementById('adminLoginForm');
-  const loginPanel = document.getElementById('loginPanel');
-  const adminDashboard = document.getElementById('adminDashboard');
-  const authError = document.getElementById('authError');
-  const logoutBtn = document.getElementById('adminLogoutBtn');
-  const reportForm = document.getElementById('laporanForm');
-  const reportsList = document.getElementById('reportsList');
-  const tableBody = document.getElementById('adminTableBody');
-  const searchInput = document.getElementById('searchInput');
-  const statusFilter = document.getElementById('statusFilter');
-  const sortFilter = document.getElementById('sortFilter');
+  const supabaseUrl = window.RCS_SUPABASE_URL;
+  const supabaseKey = window.RCS_SUPABASE_PUBLISHABLE_KEY;
+  const clientFactory = window.supabase && window.supabase.createClient;
+  const db = supabaseUrl && supabaseKey && clientFactory
+    ? clientFactory(supabaseUrl, supabaseKey, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } })
+    : null;
 
-  function showToast(message) {
-    let toast = document.getElementById('rcsToast');
+  const statuses = ["Baru", "Ditinjau", "Ditangani", "Perlu tindak lanjut", "Selesai"];
+  const $ = (id) => document.getElementById(id);
+  const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+  }[char]));
+  const showToast = (message) => {
+    let toast = $("rcsToast");
     if (!toast) {
-      toast = document.createElement('div');
-      toast.id = 'rcsToast';
-      toast.style.position = 'fixed';
-      toast.style.right = '20px';
-      toast.style.bottom = '20px';
-      toast.style.background = 'rgba(16, 33, 59, 0.9)';
-      toast.style.color = '#fff';
-      toast.style.padding = '12px 16px';
-      toast.style.borderRadius = '12px';
-      toast.style.boxShadow = '0 18px 40px rgba(16, 33, 59, 0.18)';
-      toast.style.zIndex = '9999';
-      toast.style.fontWeight = '700';
-      toast.style.opacity = '0';
-      toast.style.transition = 'opacity 0.25s ease';
+      toast = document.createElement("div");
+      toast.id = "rcsToast";
+      Object.assign(toast.style, {
+        position: "fixed", right: "20px", bottom: "20px", zIndex: "9999",
+        background: "rgba(16,33,59,.94)", color: "#fff", padding: "12px 16px",
+        borderRadius: "12px", boxShadow: "0 18px 40px rgba(16,33,59,.18)"
+      });
       document.body.appendChild(toast);
     }
-
     toast.textContent = message;
-    toast.style.opacity = '1';
-    clearTimeout(toast._timer);
-    toast._timer = setTimeout(() => {
-      toast.style.opacity = '0';
-    }, 2200);
-  }
-
-  function getReports() {
-    try {
-      return JSON.parse(localStorage.getItem(REPORTS_KEY) || '[]');
-    } catch {
-      return [];
-    }
-  }
-
-  function saveReports(reports) {
-    localStorage.setItem(REPORTS_KEY, JSON.stringify(reports));
-  }
-
-  function normalizeStatus(value) {
-    return (value || 'Baru').trim();
-  }
-
-  function statusClass(value) {
-    const status = normalizeStatus(value);
-    if (status === 'Selesai') return 'status-selesai';
-    if (status === 'Ditinjau') return 'status-ditinjau';
-    return 'status-baru';
-  }
-
-  function renderPublicReports() {
-    if (!reportsList) return;
-    const reports = getReports();
-
-    if (!reports.length) {
-      reportsList.innerHTML = '<p class="empty-state">Belum ada laporan yang disimpan.</p>';
-      return;
-    }
-
-    reportsList.innerHTML = reports
-      .slice()
-      .reverse()
-      .map((report) => {
-        const status = normalizeStatus(report.status);
-        return `
-          <article class="report-item">
-            <div class="report-item-top">
-              <h4>${report.namaPelapor || 'Pelapor'}</h4>
-              <button class="delete-btn" type="button" data-id="${report.id}">Hapus</button>
-            </div>
-            <div class="report-meta">
-              <span>${report.asalSekolah || 'Sekolah'}</span>
-              <span>${report.lingkunganSekolah || 'Lingkungan'}</span>
-              <span class="status-badge ${statusClass(status)}">${status}</span>
-            </div>
-            <p>${report.deskripsiKejadian || 'Tidak ada deskripsi.'}</p>
-          </article>
-        `;
-      })
-      .join('');
-
-    reportsList.querySelectorAll('.delete-btn').forEach((button) => {
-      button.addEventListener('click', () => {
-        const reportId = Number(button.dataset.id);
-        const remaining = getReports().filter((item) => item.id !== reportId);
-        saveReports(remaining);
-        renderPublicReports();
-        renderAdminDashboard();
-        showToast('Laporan berhasil dihapus.');
-      });
-    });
-  }
-
-  function renderAdminDashboard() {
-    if (!tableBody) return;
-
-    const allReports = getReports();
-    const total = allReports.length;
-    const done = allReports.filter((report) => normalizeStatus(report.status) === 'Selesai').length;
-    const review = allReports.filter((report) => normalizeStatus(report.status) === 'Ditinjau').length;
-    const newCount = allReports.filter((report) => normalizeStatus(report.status) === 'Baru').length;
-
-    const totalNode = document.getElementById('countTotal');
-    const doneNode = document.getElementById('countDone');
-    const reviewNode = document.getElementById('countReview');
-    const newNode = document.getElementById('countNew');
-
-    if (totalNode) totalNode.textContent = total;
-    if (doneNode) doneNode.textContent = done;
-    if (reviewNode) reviewNode.textContent = review;
-    if (newNode) newNode.textContent = newCount;
-
-    let filteredReports = [...allReports];
-
-    if (searchInput && searchInput.value.trim()) {
-      const keyword = searchInput.value.trim().toLowerCase();
-      filteredReports = filteredReports.filter((report) => {
-        const haystack = [
-          report.namaPelapor,
-          report.asalSekolah,
-          report.lingkunganSekolah,
-          report.lokasiKejadian,
-          report.deskripsiKejadian,
-        ].join(' ').toLowerCase();
-        return haystack.includes(keyword);
-      });
-    }
-
-    if (statusFilter && statusFilter.value && statusFilter.value !== 'all') {
-      filteredReports = filteredReports.filter((report) => normalizeStatus(report.status) === statusFilter.value);
-    }
-
-    const orderMap = { Baru: 1, Ditinjau: 2, Selesai: 3 };
-    if (sortFilter && sortFilter.value === 'oldest') {
-      filteredReports = filteredReports.sort((a, b) => new Date(a.tanggalKejadian) - new Date(b.tanggalKejadian));
-    } else if (sortFilter && sortFilter.value === 'status') {
-      filteredReports = filteredReports.sort((a, b) => {
-        const statusA = orderMap[normalizeStatus(a.status)] || 0;
-        const statusB = orderMap[normalizeStatus(b.status)] || 0;
-        return statusB - statusA;
-      });
+    toast.hidden = false;
+    window.clearTimeout(toast._timer);
+    toast._timer = window.setTimeout(() => { toast.hidden = true; }, 3500);
+  };
+  const showError = (node, message) => { if (node) node.textContent = message || ""; };
+  const setBusy = (button, busy, busyText = "Memproses...") => {
+    if (!button) return;
+    if (busy) {
+      button.dataset.originalText = button.textContent;
+      button.disabled = true;
+      button.textContent = busyText;
     } else {
-      filteredReports = filteredReports.sort((a, b) => new Date(b.tanggalKejadian) - new Date(a.tanggalKejadian));
+      button.disabled = false;
+      if (button.dataset.originalText) button.textContent = button.dataset.originalText;
     }
+  };
+  const formatDate = (value) => {
+    if (!value) return "-";
+    const date = new Date(value + "T00:00:00");
+    return Number.isNaN(date.getTime()) ? value : new Intl.DateTimeFormat("id-ID", { dateStyle: "medium" }).format(date);
+  };
 
-    if (!filteredReports.length) {
-      tableBody.innerHTML = '<tr><td colspan="7" class="empty-row">Belum ada laporan yang sesuai filter.</td></tr>';
+  async function loadSchools(selectId) {
+    const select = $(selectId);
+    if (!select || !db) return;
+    const { data, error } = await db.from("schools").select("id,name").eq("is_active", true).order("name");
+    if (error) {
+      select.innerHTML = '<option value="">Daftar sekolah tidak dapat dimuat</option>';
+      console.error("RCS schools:", error.message);
+      return;
+    }
+    select.innerHTML = '<option value="">Pilih sekolah</option>' + (data || [])
+      .map((school) => '<option value="' + escapeHtml(school.id) + '">' + escapeHtml(school.name) + '</option>')
+      .join("");
+  }
+
+  async function initPublicForm() {
+    const form = $("laporanForm");
+    if (!form) return;
+    const feedback = $("reportFeedback");
+    const submitButton = form.querySelector('button[type="submit"]');
+
+    if (!db) {
+      showError(feedback, "Koneksi layanan belum siap. Muat ulang halaman atau hubungi pengelola.");
+      if (submitButton) submitButton.disabled = true;
       return;
     }
 
-    tableBody.innerHTML = filteredReports
-      .map((report) => {
-        const status = normalizeStatus(report.status);
-        return `
-          <tr>
-            <td>${report.namaPelapor || '-'}</td>
-            <td>${report.asalSekolah || '-'}</td>
-            <td>${report.lingkunganSekolah || '-'}</td>
-            <td>${report.lokasiKejadian || '-'}</td>
-            <td>${(report.deskripsiKejadian || '').slice(0, 120)}${(report.deskripsiKejadian || '').length > 120 ? '...' : ''}</td>
-            <td>
-              <select class="status-select" data-id="${report.id}" aria-label="Ubah status laporan">
-                <option value="Baru" ${status === 'Baru' ? 'selected' : ''}>Baru</option>
-                <option value="Ditinjau" ${status === 'Ditinjau' ? 'selected' : ''}>Ditinjau</option>
-                <option value="Selesai" ${status === 'Selesai' ? 'selected' : ''}>Selesai</option>
-              </select>
-            </td>
-            <td>${report.tanggalKejadian || '-'}</td>
-          </tr>
-        `;
-      })
-      .join('');
-  }
+    await loadSchools("asalSekolah");
+    const dateInput = $("tanggalKejadian");
+    if (dateInput) dateInput.max = new Date().toISOString().slice(0, 10);
 
-  if (reportForm) {
-    reportForm.addEventListener('submit', (event) => {
+    form.addEventListener("submit", async (event) => {
       event.preventDefault();
+      showError(feedback, "");
+      if (!form.reportValidity()) return;
 
-      const formData = new FormData(reportForm);
-      const report = {
-        id: Date.now(),
-        namaPelapor: formData.get('namaPelapor')?.toString().trim() || '',
-        status: formData.get('statusLaporan')?.toString() || 'Baru',
-        asalSekolah: formData.get('asalSekolah')?.toString() || '',
-        lokasiKejadian: formData.get('lokasiKejadian')?.toString().trim() || '',
-        tanggalKejadian: formData.get('tanggalKejadian')?.toString() || '',
-        lingkunganSekolah: formData.get('lingkunganSekolah')?.toString() || '',
-        deskripsiKejadian: formData.get('deskripsiKejadian')?.toString().trim() || '',
+      const payload = {
+        p_school_id: $("asalSekolah").value,
+        p_reporter_name: $("namaPelapor").value.trim(),
+        p_reporter_class: $("kelasPelapor").value.trim(),
+        p_reporter_contact: $("kontakPelapor").value.trim() || null,
+        p_category: $("kategoriLaporan").value,
+        p_incident_date: $("tanggalKejadian").value,
+        p_incident_location: $("lokasiKejadian").value.trim(),
+        p_school_environment: $("lingkunganSekolah").value,
+        p_description: $("deskripsiKejadian").value.trim(),
+        p_privacy_acknowledged: $("privacyAcknowledged").checked
       };
 
-      const reports = getReports();
-      reports.push(report);
-      saveReports(reports);
-      renderPublicReports();
-      renderAdminDashboard();
-      showToast('Laporan berhasil disimpan.');
-      reportForm.reset();
-    });
-  }
+      setBusy(submitButton, true, "Mengirim laporan...");
+      try {
+        const { data, error } = await db.rpc("submit_student_report", payload);
+        if (error) {
+          console.error("RCS report submission detail:", error);
+          if (feedback) feedback.style.color = "";
+          const code = String(error.code || "");
+          const message = code === "PGRST202" || code === "42883"
+            ? "Layanan laporan sedang diperbarui. Coba lagi beberapa saat atau hubungi pengelola RCS."
+            : code === "23503" || code === "23514" || code === "22007"
+              ? "Ada isian yang belum sesuai. Periksa sekolah, kategori, tanggal, lokasi, dan deskripsi."
+              : code === "42501"
+                ? "Pengiriman belum diizinkan oleh pengaturan keamanan. Hubungi pengelola RCS."
+                : "Laporan belum terkirim karena koneksi atau layanan sedang bermasalah. Periksa internet lalu coba lagi.";
+          showError(feedback, message);
+          return;
+        }
 
-  if (loginForm) {
-    loginForm.addEventListener('submit', (event) => {
-      event.preventDefault();
-
-      const school = document.getElementById('schoolName')?.value || '';
-      const password = document.getElementById('adminPassword')?.value || '';
-
-      if (school && password === 'RCS2026') {
-        localStorage.setItem(ADMIN_KEY, 'true');
-        if (authError) authError.textContent = '';
-        if (loginPanel) loginPanel.hidden = true;
-        if (adminDashboard) adminDashboard.hidden = false;
-        renderAdminDashboard();
-        showToast('Login berhasil.');
-      } else {
-        if (authError) authError.textContent = 'Nama sekolah atau password salah.';
+        form.reset();
+        if (dateInput) dateInput.max = new Date().toISOString().slice(0, 10);
+        showToast("Laporan berhasil dikirim. Simpan kode referensi kamu.");
+        if (feedback) {
+          feedback.classList.remove("auth-error");
+          feedback.style.color = "var(--success)";
+          feedback.textContent = "Laporan terkirim. Kode referensi: " + data + ". Simpan kode ini dan sampaikan kepada BK jika diperlukan.";
+        }
+      } catch (submissionError) {
+        console.error("RCS report submission exception:", submissionError);
+        if (feedback) feedback.style.color = "";
+        showError(feedback, "Koneksi terputus saat mengirim laporan. Periksa internet. Jika belum yakin laporan terkirim, hubungi BK sebelum mencoba ulang.");
+      } finally {
+        setBusy(submitButton, false);
       }
     });
   }
 
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
-      localStorage.removeItem(ADMIN_KEY);
-      if (loginPanel) loginPanel.hidden = false;
-      if (adminDashboard) adminDashboard.hidden = true;
-      if (authError) authError.textContent = '';
-      const schoolInput = document.getElementById('schoolName');
-      const passwordInput = document.getElementById('adminPassword');
-      if (schoolInput) schoolInput.value = '';
-      if (passwordInput) passwordInput.value = '';
-      showToast('Berhasil keluar.');
+  async function loadAdminReports() {
+    const tableBody = $("adminTableBody");
+    if (!tableBody || !db) return;
+    tableBody.innerHTML = '<tr><td colspan="6" class="empty-row">Memuat laporan...</td></tr>';
+
+    const { data, error } = await db
+      .from("reports")
+      .select("id,report_code,category,incident_date,incident_location,school_environment,description,status,created_at,report_identities(full_name,class_name,contact)")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      tableBody.innerHTML = '<tr><td colspan="6" class="empty-row">Laporan tidak dapat dimuat. Periksa izin akun atau koneksi.</td></tr>';
+      console.error("RCS reports:", error.message);
+      return;
+    }
+
+    const reports = data || [];
+    $("countTotal").textContent = String(reports.length);
+    $("countDone").textContent = String(reports.filter((r) => r.status === "Selesai").length);
+    $("countReview").textContent = String(reports.filter((r) => r.status === "Ditinjau").length);
+    $("countNew").textContent = String(reports.filter((r) => r.status === "Baru").length);
+
+    const search = ($("searchInput")?.value || "").trim().toLowerCase();
+    const status = $("statusFilter")?.value || "all";
+    const sort = $("sortFilter")?.value || "latest";
+    let filtered = reports.filter((r) => {
+      const identity = Array.isArray(r.report_identities) ? r.report_identities[0] : r.report_identities;
+      const text = [r.report_code, r.category, r.description, r.incident_location, identity?.full_name, identity?.class_name].join(" ").toLowerCase();
+      return (!search || text.includes(search)) && (status === "all" || r.status === status);
     });
+    if (sort === "oldest") filtered.reverse();
+    if (sort === "status") filtered.sort((a, b) => statuses.indexOf(a.status) - statuses.indexOf(b.status));
+
+    if (!filtered.length) {
+      tableBody.innerHTML = '<tr><td colspan="6" class="empty-row">Belum ada laporan yang sesuai filter.</td></tr>';
+      return;
+    }
+
+    tableBody.innerHTML = filtered.map((r) => {
+      const identity = Array.isArray(r.report_identities) ? r.report_identities[0] : r.report_identities;
+      const name = identity?.full_name || "—";
+      const className = identity?.class_name || "—";
+      const contact = identity?.contact ? '<br><small>Kontak: ' + escapeHtml(identity.contact) + '</small>' : "";
+      const options = statuses.map((s) => '<option value="' + escapeHtml(s) + '"' + (r.status === s ? " selected" : "") + ">" + escapeHtml(s) + "</option>").join("");
+      return '<tr>' +
+        '<td>' + escapeHtml(r.report_code) + '</td>' +
+        '<td>' + escapeHtml(name) + '<br><small>' + escapeHtml(className) + '</small>' + contact + '</td>' +
+        '<td>' + escapeHtml(r.category) + '</td>' +
+        '<td>' + escapeHtml(r.incident_location) + '<br><small>' + escapeHtml(formatDate(r.incident_date)) + '</small></td>' +
+        '<td style="white-space:pre-wrap;max-width:360px">' + escapeHtml(r.description) + '</td>' +
+        '<td><select class="status-select" data-id="' + escapeHtml(r.id) + '" aria-label="Ubah status laporan">' + options + '</select></td>' +
+        '</tr>';
+    }).join("");
   }
 
-  if (tableBody) {
-    tableBody.addEventListener('change', (event) => {
-      const target = event.target;
-      if (!(target instanceof HTMLSelectElement) || !target.classList.contains('status-select')) return;
+  async function initAdmin() {
+    const loginForm = $("adminLoginForm");
+    const loginPanel = $("loginPanel");
+    const dashboard = $("adminDashboard");
+    const errorNode = $("authError");
+    if (!loginForm || !dashboard || !loginPanel) return;
 
-      const reportId = Number(target.dataset.id);
-      const nextStatus = target.value;
-      const reports = getReports().map((item) => {
-        if (item.id === reportId) return { ...item, status: nextStatus };
-        return item;
+    if (!db) {
+      showError(errorNode, "Koneksi layanan belum siap. Periksa konfigurasi aplikasi.");
+      return;
+    }
+
+    async function showDashboard() {
+      const { data: { user }, error: userError } = await db.auth.getUser();
+      if (userError || !user) {
+        loginPanel.hidden = false;
+        dashboard.hidden = true;
+        return;
+      }
+
+      const { data: profile, error: profileError } = await db
+        .from("profiles")
+        .select("full_name,role,school_id,is_active")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (profileError || !profile || !profile.is_active || profile.role !== "school_admin" || !profile.school_id) {
+        await db.auth.signOut();
+        showError(errorNode, "Akun ini belum terdaftar sebagai admin BK aktif. Hubungi pengelola RCS.");
+        loginPanel.hidden = false;
+        dashboard.hidden = true;
+        return;
+      }
+
+      const { data: school } = await db.from("schools").select("name").eq("id", profile.school_id).maybeSingle();
+      $("adminSchoolName").textContent = (profile.full_name || "Admin BK") + " · " + (school?.name || "Sekolah terdaftar");
+      loginPanel.hidden = true;
+      dashboard.hidden = false;
+      await loadAdminReports();
+    }
+
+    loginForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      showError(errorNode, "");
+      const button = loginForm.querySelector('button[type="submit"]');
+      setBusy(button, true, "Memverifikasi...");
+      const { error } = await db.auth.signInWithPassword({
+        email: $("adminEmail").value.trim(),
+        password: $("adminPassword").value
       });
-      saveReports(reports);
-      renderPublicReports();
-      renderAdminDashboard();
-      showToast(`Status laporan diubah menjadi ${nextStatus}.`);
+      setBusy(button, false);
+      if (error) {
+        showError(errorNode, "Email atau password tidak cocok, atau akun belum aktif.");
+        return;
+      }
+      await showDashboard();
     });
+
+    $("adminLogoutBtn")?.addEventListener("click", async () => {
+      await db.auth.signOut();
+      dashboard.hidden = true;
+      loginPanel.hidden = false;
+      loginForm.reset();
+      showError(errorNode, "");
+    });
+
+    ["searchInput", "statusFilter", "sortFilter"].forEach((id) => {
+      $(id)?.addEventListener("input", loadAdminReports);
+      $(id)?.addEventListener("change", loadAdminReports);
+    });
+
+    $("adminTableBody")?.addEventListener("change", async (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLSelectElement) || !target.classList.contains("status-select")) return;
+      target.disabled = true;
+      const { error } = await db.rpc("update_report_status", {
+        p_report_id: target.dataset.id,
+        p_new_status: target.value,
+        p_note: ""
+      });
+      if (error) {
+        showToast("Status gagal diperbarui. Periksa akses dan coba lagi.");
+        console.error("RCS status update:", error.message);
+      } else {
+        showToast("Status laporan berhasil diperbarui.");
+      }
+      await loadAdminReports();
+    });
+
+    const { data: { session } } = await db.auth.getSession();
+    if (session) await showDashboard();
   }
 
-  if (searchInput) searchInput.addEventListener('input', renderAdminDashboard);
-  if (statusFilter) statusFilter.addEventListener('change', renderAdminDashboard);
-  if (sortFilter) sortFilter.addEventListener('change', renderAdminDashboard);
-
-  const isLoggedIn = localStorage.getItem(ADMIN_KEY) === 'true';
-  if (loginPanel && adminDashboard) {
-    loginPanel.hidden = !(!isLoggedIn);
-    adminDashboard.hidden = !isLoggedIn;
-  }
-
-  renderPublicReports();
-  renderAdminDashboard();
-});
+  document.addEventListener("DOMContentLoaded", async () => {
+    const year = $("year");
+    if (year) year.textContent = new Date().getFullYear();
+    await initPublicForm();
+    await initAdmin();
+  });
+})();

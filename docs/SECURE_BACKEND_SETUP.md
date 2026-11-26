@@ -4,9 +4,10 @@ This branch introduces the first database/security foundation for RCS. The curre
 
 ## Architecture
 
-- Supabase PostgreSQL stores schools, staff profiles, reports, report updates, private attachment metadata, and audit logs.
+- Supabase PostgreSQL stores schools, staff profiles, reports, separately stored student identities, report updates, private attachment metadata, and audit logs.
 - Supabase Auth authenticates each school BK administrator.
 - Every school administrator profile is bound to exactly one `school_id`.
+- Student name, class, and optional contact are stored in `report_identities`, separate from report narrative and incident details; both tables remain private and school-scoped.
 - PostgreSQL Row Level Security restricts each school administrator to reports and updates from their own school.
 - Students submit reports through the `submit_student_report` RPC. Public users cannot list or read reports.
 - Status changes must use `update_report_status`; direct table writes are not granted.
@@ -44,6 +45,7 @@ Use one distinct Auth user per BK administrator. Do not let school admins choose
 - Add the Supabase browser client using the project URL and publishable/anon key only.
 - Load active schools from `public.schools` and submit the selected UUID.
 - Collect required student full name and class; collect contact only if there is a clear operational need.
+- Fetch identity details only when a case worker needs them; do not expose identity fields in public views, URLs, analytics, or notification previews.
 - Present a clear privacy notice and require acknowledgement before submission.
 - Call `submit_student_report`; show the returned report code once. Do not render submitted report contents on the public page.
 - Implement the BK dashboard using Supabase Auth, the signed-in profile, and RLS-protected report queries.

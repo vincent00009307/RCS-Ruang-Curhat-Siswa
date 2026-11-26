@@ -1,6 +1,6 @@
 # RCS — Secure multi-school backend setup
 
-This branch introduces the first database/security foundation for RCS. The current static frontend is **not yet connected** to this backend. Do not treat the deployed site as production-ready for real student reports until the integration and tests below are complete.
+This branch contains the Supabase schema, security policies, student report form integration, and BK dashboard integration. The integration has been exercised with a test submission, but cross-school isolation, abuse prevention, safeguarding procedures, retention, and child-data/privacy review still require verification. Do not use real student data until these checks are complete.
 
 ## Architecture
 
@@ -66,3 +66,25 @@ The code is committed to `feat/multi-school-secure-backend` and a Vercel Preview
 ## Student privacy and safeguarding
 
 Identity is required by the selected RCS policy. The name and class are private case data, not public profile information. Keep collection minimal, document the purpose and retention period, restrict access to assigned school personnel, and establish a safe procedure for urgent danger or suspected abuse. RCS is not an emergency service. Obtain the necessary institutional approvals and child-data/privacy review before pilot use.
+
+
+## Current verification status (26 November 2026)
+
+- The Supabase report-submission RPC was patched to generate its reference with PostgreSQL `gen_random_uuid()` rather than the unavailable `gen_random_bytes(integer)` function.
+- The project owner reports that the SQL hotfix ran successfully and a test report was submitted successfully.
+- Google Search Console ownership is verified for the production URL prefix.
+- The production sitemap was submitted and Search Console reported that it processed the sitemap and discovered one URL.
+- Google indexing of the homepage is pending; discovery does not mean the URL is indexed.
+- This branch is a Preview environment. Production remains on `main` until the owner approves a tested release.
+
+## Release checklist
+
+- [ ] Test a complete synthetic report in Preview and verify it appears only in the correct school's BK dashboard.
+- [ ] Test two separate school-admin accounts and verify cross-school read/update denial through the UI and direct API.
+- [ ] Verify the public role cannot read identities, reports, profiles, audit logs, or attachments.
+- [ ] Add and test anti-spam/rate limiting before opening the public form broadly.
+- [ ] Approve a written urgent-risk escalation process with participating schools; RCS is not an emergency service.
+- [ ] Set and communicate a retention/deletion schedule and responsible data controller.
+- [ ] Complete institutional approval and child-data/privacy review before any student pilot.
+- [ ] Check production SEO files and ensure only the public landing page is indexable.
+- [ ] Review the complete Preview diff and Vercel deployment before merging.

@@ -1161,3 +1161,36 @@ body::before { display: none; }
   .report-form,.about-card,.auth-card { padding: 22px; }
   .cta-box { padding: 28px 24px; }
 }
+
+
+/* Heading and responsive layout corrections */
+.hero h1 {
+  max-width: 760px;
+  font-size: clamp(2.9rem, 4.45vw, 4.65rem);
+  line-height: 1.08;
+  letter-spacing: -0.05em;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.hero h1 span {
+  display: inline;
+}
+
+@media (min-width: 981px) {
+  .hero-grid {
+    grid-template-columns: minmax(0, 1.08fr) minmax(360px, .92fr);
+    gap: clamp(36px, 4vw, 64px);
+  }
+
+  .hero-content {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .hero h1 {
+    font-size: clamp(2.55rem, 10.5vw, 3.5rem);
+    line-height: 1.08;
+  }
+}

@@ -195,7 +195,7 @@ begin
   end if;
 
   v_code := 'RCS-' || to_char(now(), 'YYYY') || '-' ||
-    upper(substr(encode(gen_random_bytes(6), 'hex'), 1, 10));
+    upper(substr(replace(gen_random_uuid()::text, '-', ''), 1, 10));
 
   insert into public.reports (
     report_code, school_id, category, incident_date,

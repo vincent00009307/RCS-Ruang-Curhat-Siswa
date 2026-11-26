@@ -97,22 +97,37 @@
       };
 
       setBusy(submitButton, true, "Mengirim laporan...");
-      const { data, error } = await db.rpc("submit_student_report", payload);
-      setBusy(submitButton, false);
-      if (error) {
-        console.error("RCS report submission:", error.message);
-        if (feedback) feedback.style.color = "";
-        showError(feedback, "Laporan belum terkirim. Periksa koneksi dan isian, lalu coba lagi.");
-        return;
-      }
+      try {
+        const { data, error } = await db.rpc("submit_student_report", payload);
+        if (error) {
+          console.error("RCS report submission detail:", error);
+          if (feedback) feedback.style.color = "";
+          const code = String(error.code || "");
+          const message = code === "PGRST202" || code === "42883"
+            ? "Layanan laporan sedang diperbarui. Coba lagi beberapa saat atau hubungi pengelola RCS."
+            : code === "23503" || code === "23514" || code === "22007"
+              ? "Ada isian yang belum sesuai. Periksa sekolah, kategori, tanggal, lokasi, dan deskripsi."
+              : code === "42501"
+                ? "Pengiriman belum diizinkan oleh pengaturan keamanan. Hubungi pengelola RCS."
+                : "Laporan belum terkirim karena koneksi atau layanan sedang bermasalah. Periksa internet lalu coba lagi.";
+          showError(feedback, message);
+          return;
+        }
 
-      form.reset();
-      if (dateInput) dateInput.max = new Date().toISOString().slice(0, 10);
-      showToast("Laporan berhasil dikirim. Simpan kode referensi kamu.");
-      if (feedback) {
-        feedback.classList.remove("auth-error");
-        feedback.style.color = "var(--success)";
-        feedback.textContent = "Laporan terkirim. Kode referensi: " + data + ". Simpan kode ini dan sampaikan kepada BK jika diperlukan.";
+        form.reset();
+        if (dateInput) dateInput.max = new Date().toISOString().slice(0, 10);
+        showToast("Laporan berhasil dikirim. Simpan kode referensi kamu.");
+        if (feedback) {
+          feedback.classList.remove("auth-error");
+          feedback.style.color = "var(--success)";
+          feedback.textContent = "Laporan terkirim. Kode referensi: " + data + ". Simpan kode ini dan sampaikan kepada BK jika diperlukan.";
+        }
+      } catch (submissionError) {
+        console.error("RCS report submission exception:", submissionError);
+        if (feedback) feedback.style.color = "";
+        showError(feedback, "Koneksi terputus saat mengirim laporan. Periksa internet. Jika belum yakin laporan terkirim, hubungi BK sebelum mencoba ulang.");
+      } finally {
+        setBusy(submitButton, false);
       }
     });
   }

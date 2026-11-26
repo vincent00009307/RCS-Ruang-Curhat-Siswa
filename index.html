@@ -133,86 +133,74 @@
             <form id="laporanForm" class="report-form">
               <div class="form-grid">
                 <label>
-                  <span>Nama pelapor</span>
-                  <input id="namaPelapor" name="namaPelapor" type="text" placeholder="Nama lengkap" required />
+                  <span>Nama lengkap pelapor</span>
+                  <input id="namaPelapor" name="namaPelapor" type="text" minlength="2" maxlength="120" autocomplete="name" required />
                 </label>
-
                 <label>
-                  <span>Status laporan</span>
-                  <select id="statusLaporan" name="statusLaporan" required>
-                    <option value="Baru">Baru</option>
-                    <option value="Ditinjau">Ditinjau</option>
-                    <option value="Selesai">Selesai</option>
-                  </select>
+                  <span>Kelas</span>
+                  <input id="kelasPelapor" name="kelasPelapor" type="text" maxlength="40" placeholder="Contoh: XI IPA 2" required />
                 </label>
-
+                <label>
+                  <span>Kontak (opsional)</span>
+                  <input id="kontakPelapor" name="kontakPelapor" type="text" maxlength="80" placeholder="Nomor yang dapat dihubungi" />
+                </label>
                 <label>
                   <span>Asal sekolah</span>
                   <select id="asalSekolah" name="asalSekolah" required>
-                    <option value="">Pilih sekolah</option>
-                    <option value="SMA Negeri 1 Banda Aceh">SMA Negeri 1 Banda Aceh</option>
-                    <option value="SMA Negeri 2 Banda Aceh">SMA Negeri 2 Banda Aceh</option>
-                    <option value="SMA Negeri 3 Banda Aceh">SMA Negeri 3 Banda Aceh</option>
-                    <option value="SMA Negeri 4 Banda Aceh">SMA Negeri 4 Banda Aceh</option>
-                    <option value="SMA Negeri 5 Banda Aceh">SMA Negeri 5 Banda Aceh</option>
-                    <option value="SMA Negeri 6 Banda Aceh">SMA Negeri 6 Banda Aceh</option>
-                    <option value="SMA Negeri 7 Banda Aceh">SMA Negeri 7 Banda Aceh</option>
-                    <option value="SMA Negeri 8 Banda Aceh">SMA Negeri 8 Banda Aceh</option>
-                    <option value="SMA Negeri 9 Banda Aceh">SMA Negeri 9 Banda Aceh</option>
-                    <option value="SMA Negeri 10 Banda Aceh">SMA Negeri 10 Banda Aceh</option>
-                    <option value="SMA Negeri 11 Banda Aceh">SMA Negeri 11 Banda Aceh</option>
-                    <option value="SMA Negeri 12 Banda Aceh">SMA Negeri 12 Banda Aceh</option>
-                    <option value="SMA Negeri 13 Banda Aceh">SMA Negeri 13 Banda Aceh</option>
-                    <option value="SMA Negeri 14 Banda Aceh">SMA Negeri 14 Banda Aceh</option>
-                    <option value="SMA Negeri 15 Banda Aceh">SMA Negeri 15 Banda Aceh</option>
-                    <option value="SMA Labschool Banda Aceh">SMA Labschool Banda Aceh</option>
-                    <option value="SMA Muhammadiyah 1 Banda Aceh">SMA Muhammadiyah 1 Banda Aceh</option>
-                    <option value="SMA Muhammadiyah 2 Banda Aceh">SMA Muhammadiyah 2 Banda Aceh</option>
-                    <option value="SMA Al-Masry Banda Aceh">SMA Al-Masry Banda Aceh</option>
-                    <option value="SMA Ulumul Quran Banda Aceh">SMA Ulumul Quran Banda Aceh</option>
-                    <option value="SMA IT Al-Fityan Banda Aceh">SMA IT Al-Fityan Banda Aceh</option>
-                    <option value="Lainnya">Lainnya</option>
+                    <option value="">Memuat daftar sekolah...</option>
                   </select>
                 </label>
-
                 <label>
-                  <span>Lokasi kejadian</span>
-                  <input type="text" id="lokasiKejadian" name="lokasiKejadian" placeholder="Contoh: Kelas XI-2, Koridor sekolah" required />
+                  <span>Kategori masalah</span>
+                  <select id="kategoriLaporan" name="kategoriLaporan" required>
+                    <option value="">Pilih kategori</option>
+                    <option>Perundungan</option>
+                    <option>Kekerasan fisik atau verbal</option>
+                    <option>Pelecehan</option>
+                    <option>Tekanan akademik</option>
+                    <option>Masalah pertemanan</option>
+                    <option>Masalah keluarga</option>
+                    <option>Masalah pribadi lainnya</option>
+                  </select>
                 </label>
-
                 <label>
                   <span>Tanggal kejadian</span>
                   <input type="date" id="tanggalKejadian" name="tanggalKejadian" required />
                 </label>
-
                 <label>
-                  <span>Lingkungan sekolah</span>
+                  <span>Lokasi kejadian</span>
+                  <input type="text" id="lokasiKejadian" name="lokasiKejadian" maxlength="160" placeholder="Contoh: Kelas XI-2 atau koridor" required />
+                </label>
+                <label>
+                  <span>Lingkungan kejadian</span>
                   <select id="lingkunganSekolah" name="lingkunganSekolah" required>
-                    <option value="">Pilih lokasi</option>
-                    <option value="Kelas">Kelas</option>
-                    <option value="Koridor">Koridor</option>
-                    <option value="Perpustakaan">Perpustakaan</option>
-                    <option value="Lapangan">Lapangan</option>
-                    <option value="Kantin">Kantin</option>
-                    <option value="Toilet">Toilet</option>
-                    <option value="Lainnya">Lainnya</option>
+                    <option value="">Pilih lingkungan</option>
+                    <option>Kelas</option>
+                    <option>Koridor</option>
+                    <option>Perpustakaan</option>
+                    <option>Lapangan</option>
+                    <option>Kantin</option>
+                    <option>Toilet</option>
+                    <option>Lainnya</option>
                   </select>
                 </label>
               </div>
-
               <label>
-                <span>Deskripsi kejadian</span>
-                <textarea id="deskripsiKejadian" name="deskripsiKejadian" rows="6" placeholder="Jelaskan kejadian secara singkat dan jelas..." required></textarea>
+                <span>Ceritakan kejadian</span>
+                <textarea id="deskripsiKejadian" name="deskripsiKejadian" rows="6" minlength="10" maxlength="10000" placeholder="Ceritakan apa yang terjadi, kapan, dan bantuan yang kamu butuhkan. Hindari membagikan informasi yang tidak diperlukan." required></textarea>
               </label>
-
-              <button type="submit" class="btn btn-primary submit-btn">Simpan Laporan</button>
+              <label class="privacy-consent" style="display:flex;grid-template-columns:auto 1fr;align-items:flex-start;gap:10px;margin-top:16px">
+                <input id="privacyAcknowledged" name="privacyAcknowledged" type="checkbox" required style="width:auto;margin-top:6px" />
+                <span>Saya memahami bahwa nama, kelas, dan isi laporan akan diterima oleh petugas BK sekolah yang dipilih untuk menindaklanjuti laporan. Identitas saya tidak ditampilkan secara publik.</span>
+              </label>
+              <p class="empty-state" style="margin-top:16px">RCS bukan layanan darurat. Jika kamu berada dalam bahaya langsung, segera cari orang dewasa tepercaya atau hubungi layanan darurat setempat.</p>
+              <button type="submit" class="btn btn-primary submit-btn">Kirim Laporan</button>
+              <p id="reportFeedback" class="auth-error" aria-live="polite"></p>
             </form>
-
             <aside class="report-panel">
-              <div class="panel-title">Laporan tersimpan</div>
-              <div id="reportsList" class="reports-list" aria-live="polite">
-                <p class="empty-state">Belum ada laporan yang disimpan.</p>
-              </div>
+              <div class="panel-title">Privasi laporan</div>
+              <p>Laporan hanya dapat dibaca oleh admin BK yang ditugaskan pada sekolah terkait. Setelah dikirim, kamu akan menerima kode referensi. Simpan kode tersebut untuk keperluan komunikasi dengan pihak sekolah.</p>
+              <p><strong>Catatan:</strong> Nama dan kelas membantu BK menindaklanjuti laporan, tetapi pengisian ini bukan verifikasi identitas resmi.</p>
             </aside>
           </div>
         </div>
@@ -299,6 +287,8 @@
       </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js" defer></script>
     <script src="script.js" defer></script>
   </body>
 </html>

@@ -40,18 +40,19 @@ where s.slug = 'sma-negeri-1-banda-aceh';
 
 Use one distinct Auth user per BK administrator. Do not let school admins choose their own `school_id` or role.
 
-## Frontend integration still required
+## Frontend integration implemented on this branch
 
-- Add the Supabase browser client using the project URL and publishable/anon key only.
-- Load active schools from `public.schools` and submit the selected UUID.
-- Collect required student full name and class; collect contact only if there is a clear operational need.
-- Fetch identity details only when a case worker needs them; do not expose identity fields in public views, URLs, analytics, or notification previews.
-- Present a clear privacy notice and require acknowledgement before submission.
-- Call `submit_student_report`; show the returned report code once. Do not render submitted report contents on the public page.
-- Implement the BK dashboard using Supabase Auth, the signed-in profile, and RLS-protected report queries.
-- Change statuses only through `update_report_status`.
-- Remove the legacy demo password, localStorage report store, public report list, and public delete control.
-- Add server-side rate limiting / abuse protection before opening the intake publicly.
+- The browser loads Supabase JS v2 from the CDN and initializes it with the project URL and publishable key in `supabase-config.js`.
+- The student form loads active schools from `public.schools` and submits the selected school UUID.
+- Student full name and class are required; contact is optional.
+- The privacy acknowledgement is required before submission.
+- The public form calls `submit_student_report` and displays only the returned reference code. There is no public report list.
+- The BK dashboard uses Supabase Auth, reads the signed-in user's own profile, and loads reports through RLS.
+- Status changes use `update_report_status`.
+- The demo password, localStorage report store, public report list, and public delete control have been removed from this branch.
+- The browser configuration contains only the public publishable key. Never add a secret/service_role key.
+
+The code is committed to `feat/multi-school-secure-backend` and a Vercel Preview deployment is available. It has not been merged to `main`.
 
 ## Required security checks before production
 

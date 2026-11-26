@@ -44,41 +44,16 @@
 
           <form id="adminLoginForm" class="auth-form">
             <label>
-              <span>Nama sekolah</span>
-              <select id="schoolName" required>
-                <option value="">Pilih sekolah</option>
-                <option value="SMA Negeri 1 Banda Aceh">SMA Negeri 1 Banda Aceh</option>
-                <option value="SMA Negeri 2 Banda Aceh">SMA Negeri 2 Banda Aceh</option>
-                <option value="SMA Negeri 3 Banda Aceh">SMA Negeri 3 Banda Aceh</option>
-                <option value="SMA Negeri 4 Banda Aceh">SMA Negeri 4 Banda Aceh</option>
-                <option value="SMA Negeri 5 Banda Aceh">SMA Negeri 5 Banda Aceh</option>
-                <option value="SMA Negeri 6 Banda Aceh">SMA Negeri 6 Banda Aceh</option>
-                <option value="SMA Negeri 7 Banda Aceh">SMA Negeri 7 Banda Aceh</option>
-                <option value="SMA Negeri 8 Banda Aceh">SMA Negeri 8 Banda Aceh</option>
-                <option value="SMA Negeri 9 Banda Aceh">SMA Negeri 9 Banda Aceh</option>
-                <option value="SMA Negeri 10 Banda Aceh">SMA Negeri 10 Banda Aceh</option>
-                <option value="SMA Negeri 11 Banda Aceh">SMA Negeri 11 Banda Aceh</option>
-                <option value="SMA Negeri 12 Banda Aceh">SMA Negeri 12 Banda Aceh</option>
-                <option value="SMA Negeri 13 Banda Aceh">SMA Negeri 13 Banda Aceh</option>
-                <option value="SMA Negeri 14 Banda Aceh">SMA Negeri 14 Banda Aceh</option>
-                <option value="SMA Negeri 15 Banda Aceh">SMA Negeri 15 Banda Aceh</option>
-                <option value="SMA Labschool Banda Aceh">SMA Labschool Banda Aceh</option>
-                <option value="SMA Muhammadiyah 1 Banda Aceh">SMA Muhammadiyah 1 Banda Aceh</option>
-                <option value="SMA Muhammadiyah 2 Banda Aceh">SMA Muhammadiyah 2 Banda Aceh</option>
-                <option value="SMA Al-Masry Banda Aceh">SMA Al-Masry Banda Aceh</option>
-                <option value="SMA Ulumul Quran Banda Aceh">SMA Ulumul Quran Banda Aceh</option>
-                <option value="SMA IT Al-Fityan Banda Aceh">SMA IT Al-Fityan Banda Aceh</option>
-              </select>
+              <span>Email akun admin BK</span>
+              <input id="adminEmail" type="email" autocomplete="username" placeholder="nama@sekolah.sch.id" required />
             </label>
-
             <label>
               <span>Password</span>
-              <input id="adminPassword" type="password" placeholder="Masukkan password" required />
+              <input id="adminPassword" type="password" autocomplete="current-password" placeholder="Masukkan password akun" required />
             </label>
-
             <button type="submit" class="btn btn-primary full-width">Masuk Dashboard</button>
             <p id="authError" class="auth-error" aria-live="polite"></p>
-            <p class="auth-note">Demo password: <strong>RCS2026</strong></p>
+            <p class="auth-note">Akun admin dibuat oleh pengelola RCS. Tidak ada pendaftaran admin mandiri.</p>
           </form>
         </div>
 
@@ -87,6 +62,7 @@
             <div>
               <span class="eyebrow">Monitoring BK</span>
               <h1>Dashboard Laporan Siswa</h1>
+              <p id="adminSchoolName" class="auth-note"></p>
             </div>
             <button id="adminLogoutBtn" type="button" class="btn btn-secondary">Keluar</button>
           </div>
@@ -125,6 +101,8 @@
                   <option value="all">Semua status</option>
                   <option value="Baru">Baru</option>
                   <option value="Ditinjau">Ditinjau</option>
+                  <option value="Ditangani">Ditangani</option>
+                  <option value="Perlu tindak lanjut">Perlu tindak lanjut</option>
                   <option value="Selesai">Selesai</option>
                 </select>
               </label>
@@ -150,13 +128,12 @@
               <table class="report-table">
                 <thead>
                   <tr>
-                    <th>Nama Siswa</th>
-                    <th>Sekolah</th>
-                    <th>Lingkungan</th>
-                    <th>Lokasi</th>
-                    <th>Ringkasan</th>
+                    <th>Kode</th>
+                    <th>Nama & kelas</th>
+                    <th>Kategori</th>
+                    <th>Lokasi & tanggal</th>
+                    <th>Deskripsi</th>
                     <th>Status</th>
-                    <th>Tanggal</th>
                   </tr>
                 </thead>
                 <tbody id="adminTableBody"></tbody>
@@ -167,6 +144,8 @@
       </section>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

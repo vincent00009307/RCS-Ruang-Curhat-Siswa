@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin.html
+
+Sitemap: https://rcs-ruang-curhat-siswa.vercel.app/sitemap.xml

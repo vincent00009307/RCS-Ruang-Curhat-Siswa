@@ -27,9 +27,6 @@ create table if not exists public.reports (
   id uuid primary key default gen_random_uuid(),
   report_code text not null unique,
   school_id uuid not null references public.schools(id) on delete restrict,
-  reporter_name text not null,
-  reporter_class text not null,
-  reporter_contact text,
   category text not null check (category in (
     'Perundungan','Kekerasan fisik atau verbal','Pelecehan',
     'Tekanan akademik','Masalah pertemanan','Masalah keluarga','Masalah pribadi lainnya'
@@ -42,10 +39,16 @@ create table if not exists public.reports (
     check (status in ('Baru','Ditinjau','Ditangani','Perlu tindak lanjut','Selesai')),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
-  constraint reporter_name_length check (char_length(trim(reporter_name)) between 2 and 120),
-  constraint reporter_class_length check (char_length(trim(reporter_class)) between 1 and 40),
-  constraint reporter_contact_length check (reporter_contact is null or char_length(reporter_contact) <= 80),
   constraint description_length check (char_length(trim(description)) between 10 and 10000)
+);
+
+-- Keep identifying details in a separate, tightly scoped table.
+create table if not exists public.report_identities (
+  report_id uuid primary key references public.reports(id) on delete cascade,
+  full_name text not null check (char_length(trim(full_name)) between 2 and 120),
+  class_name text not null check (char_length(trim(class_name)) between 1 and 40),
+  contact text check (contact is null or char_length(contact) <= 80),
+  created_at timestamptz not null default now()
 );
 
 create index if not exists reports_school_created_idx
@@ -158,18 +161,13 @@ set search_path = ''
 as $$
 declare
   v_code text;
+  v_report_id uuid;
 begin
   if p_privacy_acknowledged is distinct from true then
     raise exception 'Persetujuan pemberitahuan privasi wajib diberikan.';
   end if;
   if not exists (select 1 from public.schools s where s.id = p_school_id and s.is_active = true) then
     raise exception 'Sekolah tidak tersedia.';
-  end if;
-  if p_reporter_name is null or char_length(trim(p_reporter_name)) not between 2 and 120 then
-    raise exception 'Nama lengkap wajib diisi.';
-  end if;
-  if p_reporter_class is null or char_length(trim(p_reporter_class)) not between 1 and 40 then
-    raise exception 'Kelas wajib diisi.';
   end if;
   if p_category not in ('Perundungan','Kekerasan fisik atau verbal','Pelecehan','Tekanan akademik','Masalah pertemanan','Masalah keluarga','Masalah pribadi lainnya') then
     raise exception 'Kategori laporan tidak valid.';
@@ -186,6 +184,12 @@ begin
   if p_description is null or char_length(trim(p_description)) not between 10 and 10000 then
     raise exception 'Deskripsi harus berisi 10 sampai 10.000 karakter.';
   end if;
+  if p_reporter_name is null or char_length(trim(p_reporter_name)) not between 2 and 120 then
+    raise exception 'Nama lengkap wajib diisi.';
+  end if;
+  if p_reporter_class is null or char_length(trim(p_reporter_class)) not between 1 and 40 then
+    raise exception 'Kelas wajib diisi.';
+  end if;
   if p_reporter_contact is not null and char_length(p_reporter_contact) > 80 then
     raise exception 'Kontak terlalu panjang.';
   end if;
@@ -194,13 +198,17 @@ begin
     upper(substr(encode(gen_random_bytes(6), 'hex'), 1, 10));
 
   insert into public.reports (
-    report_code, school_id, reporter_name, reporter_class, reporter_contact,
-    category, incident_date, incident_location, school_environment, description
+    report_code, school_id, category, incident_date,
+    incident_location, school_environment, description
   ) values (
-    v_code, p_school_id, trim(p_reporter_name), trim(p_reporter_class),
-    nullif(trim(coalesce(p_reporter_contact, '')), ''),
-    p_category, p_incident_date, trim(p_incident_location),
-    trim(p_school_environment), trim(p_description)
+    v_code, p_school_id, p_category, p_incident_date,
+    trim(p_incident_location), trim(p_school_environment), trim(p_description)
+  ) returning id into v_report_id;
+
+  insert into public.report_identities (report_id, full_name, class_name, contact)
+  values (
+    v_report_id, trim(p_reporter_name), trim(p_reporter_class),
+    nullif(trim(coalesce(p_reporter_contact, '')), '')
   );
 
   return v_code;
@@ -269,6 +277,7 @@ for each row execute function public.set_updated_at();
 alter table public.schools enable row level security;
 alter table public.profiles enable row level security;
 alter table public.reports enable row level security;
+alter table public.report_identities enable row level security;
 alter table public.report_updates enable row level security;
 alter table public.report_attachments enable row level security;
 alter table public.audit_logs enable row level security;
@@ -286,6 +295,16 @@ drop policy if exists "school admins read own school reports" on public.reports;
 create policy "school admins read own school reports" on public.reports
 for select to authenticated using (
   public.is_active_school_admin() and school_id = public.current_school_id()
+);
+
+drop policy if exists "school admins read own report identities" on public.report_identities;
+create policy "school admins read own report identities" on public.report_identities
+for select to authenticated using (
+  exists (
+    select 1 from public.reports r
+    where r.id = report_id and r.school_id = public.current_school_id()
+  )
+  and public.is_active_school_admin()
 );
 
 drop policy if exists "school admins read own report updates" on public.report_updates;
@@ -316,10 +335,10 @@ for select to authenticated using (
 );
 
 -- No direct public inserts, updates or deletes. Intake and status changes use RPCs.
-revoke all on public.reports, public.report_updates, public.report_attachments, public.audit_logs from anon, authenticated;
+revoke all on public.reports, public.report_identities, public.report_updates, public.report_attachments, public.audit_logs from anon, authenticated;
 grant select on public.schools to anon, authenticated;
 grant select on public.profiles to authenticated;
-grant select on public.reports, public.report_updates, public.report_attachments, public.audit_logs to authenticated;
+grant select on public.reports, public.report_identities, public.report_updates, public.report_attachments, public.audit_logs to authenticated;
 
 revoke all on function public.submit_student_report(uuid,text,text,text,text,date,text,text,text,boolean) from public;
 grant execute on function public.submit_student_report(uuid,text,text,text,text,date,text,text,text,boolean) to anon, authenticated;
